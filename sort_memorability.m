@@ -80,7 +80,7 @@ for i=1:n_samples
 end
 fclose(fp);
 
-save([proj_dir '/data/memorability_mapping.mat'],'mapping');
+save([proj_dir '/data/memorability_mapping.mat'],'mapping', 'mem');
 clearvars -except mapping img;
 
 fprintf('[Done]\n');

@@ -2,7 +2,7 @@
 clear all; close all;
 
 %% Read CSV File
-datastruct = importdata('../data/mturk/output/sentence_similarity_test_results_1.csv');
+datastruct = importdata('../data/mturk/output/sentence_similarity_results.csv');
 load('../data/sentence_descriptions.mat');
 
 [headers, data] = parse_csv(datastruct);
@@ -41,4 +41,6 @@ clearvars -except scores w;
 scores(scores==0) = NaN; % Ignore scores not available
 
 scores = (scores - 1)/(10 - 1); % map scores to range [0, 1]
-specificity = 1 - nanmean(nanmean(scores,3),2);
+specificity = nanmean(nanmean(scores,3),2);
+
+save('../data/specificity_scores.mat','specificity','scores');
