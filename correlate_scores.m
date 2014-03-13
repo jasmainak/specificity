@@ -29,7 +29,7 @@ fprintf('[Done]\n');
 fprintf('Loading images ... ');
 
 if ~exist('img','var')    
-    load([img_dir '/target_images.mat']);
+%    load([img_dir '/target_images.mat']);
 end
 
 fprintf('[Done]\n');
@@ -68,7 +68,7 @@ object_pres = (full(Feat.Areas))>min_area;
 [r.presVsMem, idx.pm] = sort_corr(object_pres(:, mapping)', mem(mapping));
 [r.presVsSpec, idx.ps] = sort_corr(object_pres(:, mapping)', specificity);
 
-% Display top-10 correlations
+% Display top-10 correlations (category specific)
 
 fprintf('\nObject areas with Memorability\n\n');
 disp_corr(r.areasVsMem, idx.am, Feat.objectnames, 10);
@@ -83,6 +83,56 @@ disp_corr(r.presVsMem, idx.pm, Feat.objectnames, 10);
 fprintf('\nObject presence with Specificity\n\n');
 disp_corr(r.presVsSpec, idx.ps, Feat.objectnames, 10);
 
+% Generic correlations
+
+y = full(Feat.Areas);
+y(y==0) = NaN; % compute mean and median by leaving out objects with 0 area
+
+[max_area, max_idx] = nanmax(y(:, mapping));
+
+r.maxAreaVsSpec = corr(max_area', specificity, ...
+                       'type','spearman');
+r.medAreavsSpec = corr(nanmedian(y(:, mapping))', specificity, ...
+                       'type','spearman');
+r.meanAreavsSpec = corr(nanmean(y(:, mapping))', specificity, ...
+                       'type','spearman');
+
+%for i=1:length(max_idx)
+%    y(max_idx(i), mapping) = NaN; % Check carefully
+%end
+%second_max = nanmax(y
+
+clear y;
+                   
+r.objectcountVsSpec = corr(sum(Feat.Counts(:, mapping))', specificity, ...
+                     'type','spearman');
+            
+% Correlate object distribution with specificity
+
+for i=1:length(mapping) % Iterate over images
+    objarray = Feat.Dmemory(mapping(i)).annotation.object;
+    u = 1;
+    for j=1:length(objarray) % Iterate over objects
+        x = objarray(j).polygon.x;
+        y = objarray(j).polygon.y;
+        
+        if polyarea(x,y)>min_area
+            geom = polygeom(x,y);
+            x_cen(u) = geom(2); y_cen(u) = geom(3);
+            u = u+1;
+        end
+        
+        scatter_x(i) = std(x_cen); scatter_y(i) = std(y_cen);
+        mean_x(i) = mean(x_cen); mean_y(i) = mean(y_cen);        
+    end
+end
+
+r.scatterxVsSpec = corr(scatter_x',specificity,'type','spearman');
+r.scatteryVsSpec = corr(scatter_y',specificity,'type','spearman');
+r.meanxVsSpec = corr(mean_x',specificity,'type','spearman');
+r.meanyVsSpec = corr(mean_y',specificity,'type','spearman');
+
+break;
 %% Show images of a particular category
 
 categ = 'platform';
