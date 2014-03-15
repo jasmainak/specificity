@@ -21,28 +21,38 @@ load('../library/annotations/annotations/anno_names.mat');
 f1 = full(max(Feat.Areas))'; 
 f2 = Feat.gist;
 
-X = double(cat(2, f1(mapping, :), f2(mapping, :)));
+%X = double(Feat.gist(mapping, :));
+X = double(cat(2, Feat.gist(mapping, :), anno_feats(mapping, :)));
+%X = double(cat(2, f1(mapping, :), f2(mapping, :)));
 %X = double(anno_feats(mapping, :));
 y = specificity;
 
 % Do SVR
 
+runs = 50;
 folds = 5;
-idx = crossvalind('Kfold',length(specificity), folds);
-r = zeros(1,folds);
+r = zeros(runs,folds);
 
-for i=1:folds
-    train_idx = (idx~=i); test_idx = (idx==i);
-
-    [Z_train,mu,sigma] = zscore(X(train_idx,:));
-    model = svmtrain(y(train_idx), Z_train, '-s 3');
+for j=1:runs
     
-    sigma0 = sigma;
-    sigma0(sigma0==0) = 1;
-    Z_test = bsxfun(@minus,X(test_idx,:), mu);
-    Z_test = bsxfun(@rdivide, Z_test, sigma0);
+    idx = crossvalind('Kfold',length(specificity), folds);
+        
+    for i=1:folds
+        train_idx = (idx~=i); test_idx = (idx==i);
+        
+        [Z_train,mu,sigma] = zscore(X(train_idx,:));
+        model = svmtrain(y(train_idx), Z_train, '-s 3');
+        
+        sigma0 = sigma;
+        sigma0(sigma0==0) = 1;
+        Z_test = bsxfun(@minus,X(test_idx,:), mu);
+        Z_test = bsxfun(@rdivide, Z_test, sigma0);
+        
+        y_out = svmpredict(y(test_idx), Z_test, model);
+        
+        r(j, i) = corr(y_out, y(test_idx), 'type', 'spearman');
+    end
     
-    y_out = svmpredict(y(test_idx), Z_test, model);
-
-    r(i) = corr(y_out, y(test_idx), 'type', 'spearman');
 end
+
+mean(r(:))
