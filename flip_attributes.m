@@ -15,4 +15,11 @@ end
 
 anno_feats(:, idx) = 1 - anno_feats(:, idx);
 
+% Make clear_sky and blue_sky zero when sky_present < 0.5
+
+sky_idx = find(anno_feats(:, strcmpi(anno_names, 'sky_present')) < 0.5);
+
+anno_feats(sky_idx, strcmpi(anno_names, 'clear_sky')) = 0;
+anno_feats(sky_idx, strcmpi(anno_names, 'blue_sky')) = 0;
+
 save('../library/annotations/annotations/anno_feats_modified.mat', 'anno_feats');
