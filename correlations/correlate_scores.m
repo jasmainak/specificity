@@ -13,11 +13,11 @@ img_dir = [proj_dir '/library/cvpr_memorability_data/Data/Image data'];
 fprintf('Loading data ... ');
 
 if ~exist('specificity','var')
-    load('../data/specificity_scores.mat');
+    load('../data/specificity_scores_all.mat');
 end
 
 if ~exist('mem','var')
-    load('../data/memorability_mapping.mat');
+    load('../data/memorability_mapping.mat');    
 end
 
 if ~exist('Feat','var')

@@ -20,23 +20,23 @@ sentences = sentences['sentences']
 
 f = open('../qualitative/automated_specificity.txt', 'w')
 
-all_pairs1, all_pairs2 = list(), list()
-all_scores = list()
+sent_pairs, scores_w = list(), list()
 
-vectorizer = TfidfVectorizer()
+vectorizer = TfidfVectorizer(token_pattern='(?u)\\b\\w\\w\\w+\\b')
 corpus = list()
 
 """Build Corpus"""
 for sent_group in sentences:
     corpus.append(' '.join([sent[0] for sent in sent_group]))
 
-X = vectorizer.fit_transform(corpus)
+#X = vectorizer.fit_transform(corpus)
+vectorizer.fit(corpus)
 analyze = vectorizer.build_analyzer()
 
-specificity_max = list()
+specificity_max, specificity_w = list(), list()
 for im_idx, sentence_group in enumerate(sentences):
-    #X = vectorizer.fit_transform
-    similarity_max = list()
+
+    similarity_max, similarity_w = list(), list()
     for (sent1, sent2) in combinations(sentence_group,2):
                 
         # separate words
@@ -52,6 +52,9 @@ for im_idx, sentence_group in enumerate(sentences):
         sent1_weights = [vectorizer.transform(sent1).toarray()[0][vectorizer.vocabulary_.get(w)] for w in words1]
         sent2_weights = [vectorizer.transform(sent2).toarray()[0][vectorizer.vocabulary_.get(w)] for w in words2]
         
+        # sent1_weights = [vectorizer.transform(sent1).toarray()[0][vectorizer.vocabulary_.get(w)] for w in words1]
+        # sent2_weights = [vectorizer.transform(sent2).toarray()[0][vectorizer.vocabulary_.get(w)] for w in words2]
+
         print >> f, [w.encode('utf-8') for w in words1]        
         print >> f, [prettyfloat(w) for w in sent1_weights]
         print >> f, [w.encode('utf-8') for w in words2]
@@ -75,7 +78,7 @@ for im_idx, sentence_group in enumerate(sentences):
 
             if max(best_score):
                 sim_max.append(max(best_score))
-                print >>f, "%s: %s" % (w1, words2[best_score.index(max(best_score))])
+                print >>f, "%s: %s (%0.2f)" % (w1, words2[best_score.index(max(best_score))], sim_max[-1])
             else:
                 sim_max.append(None)
 
@@ -96,25 +99,32 @@ for im_idx, sentence_group in enumerate(sentences):
 
             if max(best_score):
                 sim_max.append(max(best_score))
-                print >>f, "%s: %s" % (w1, words1[best_score.index(max(best_score))])
+                print >>f, "%s: %s (%0.2f)" % (w1, words1[best_score.index(max(best_score))], sim_max[-1])
             else:
                 sim_max.append(None)
-
-        print >>f, '\n'
-        
+       
         # sentence similarity
-        similarity_max.append(np.mean([x for x in sim_max if x!=None]))
         
-        all_scores.append(similarity_max[-1])
-        all_pairs1.append(sent1)
-        all_pairs2.append(sent2)
-        
-    specificity_max.append(np.mean(similarity_max))
+        if all(x is None for x in sim_max):
+            similarity_max.append(float('nan'))
+            similarity_w.append(float('nan'))
+        else:
+            (sim_cleaned, a) = zip(*[(x, w) for (x, w) in zip(sim_max, sent1_weights + sent2_weights) if x!=None])
+            similarity_max.append(np.mean(sim_cleaned))
+            similarity_w.append(np.average(sim_cleaned, weights=a))
 
-    print "Specificity score for image_%d = %0.4f" % (im_idx, specificity_max[-1])
+        print >>f, "\nSimilarity score = (%0.2f, %0.2f)\n" % (similarity_max[-1], similarity_w[-1])
+                
+    scores_w.append(similarity_w)
+    sent_pairs.append([(sent1[0], sent2[0]) for (sent1, sent2) in combinations(sentence_group,2)])
+        
+    specificity_max.append(nanmean(similarity_max))
+    specificity_w.append(nanmean(similarity_w))
+
+    print "Specificity score for image_%d = (%0.4f, %0.4f)" % (im_idx, specificity_max[-1], specificity_w[-1])
 
 scipy.io.savemat('../data/specificity_automated_modified.mat', 
-                 {'specificity_max' : specificity_max, 'all_scores': all_scores,
-                 'all_pairs1': all_pairs1, 'all_pairs2': all_pairs2 })
+                 {'specificity_max' : specificity_max, 'specificity_w': specificity_w, 'scores_w': scores_w,
+                 'sent_pairs': np.array(sent_pairs, dtype=object)})
 
 f.close()

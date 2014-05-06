@@ -5,7 +5,7 @@ clear all; close all;
 proj_dir = '/home/mainak/Desktop/specificity';
 addpath([proj_dir '/library/cvpr_memorability_code/Code/Library/cell2csv']);
 
-load('../data/sentence_descriptions.mat');
+load('../data/sentence_descriptions_140317.mat');
 
 [n_images, n_sentences] = size(sentences);
 n_pairs = nchoosek(n_sentences,2)*n_images;
@@ -48,4 +48,4 @@ pairs = reshape(pairs', size(pairs,2)*n_pairs, 1);
 pairs = cat(1, pair_headers, reshape(pairs, length(pair_headers), ...
             length(pairs)/length(pair_headers))');
 
-cell2csv('../data/mturk/input/mturk_similarity.csv', pairs, ',');
+cell2csv('../data/mturk/input/mturk_similarity_223to666.csv', pairs, ',');

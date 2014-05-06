@@ -1,28 +1,29 @@
 % Image search
 clear all; warning off; close all;
 
-load('../data/image_search_10sentences.mat');
-load('../data/image_search_results.mat','s','reference_idx');
+%load('../data/image_search_10sentences_reference_1stsent.mat');
+load('../data/image_search_50sentences_query.mat');
+load('../data/image_search_50sentences_parameters.mat');
 
-clearvars -except comb;
+d = 1000; sigma_d = 0.1; sigma_s = sigma_d;
 
-load('../data/image_search_10sentences_reference_1stsent.mat');
-
-reference_idx = zeros(1,222);
-
-d = 222; sigma_d = 0.1; sigma_s = sigma_d;
-            
-reference_idx = reference_idx(1:d);
+reference_idx = zeros(1,d);
 s = s(1:d, 1:d);
 
 train_idx_w(1, :) = [1; zeros(length(comb)-1,1)];
 
-w = {2:3; 2:4; [2:4,6]; [2:4,6:7]; [2:4,6:8]; [2:4,6:9]; [2:4,6:10]; [1:4,6:10]; [1:10]};
+%w = {2:3; 2:4; [2:4,6]; [2:4,6:7]; [2:4,6:8]; [2:4,6:9]; [2:4,6:10]; [1:4,6:10]; [1:10]};
+
+for i=1:47
+    w{i} = 2:i+2;
+end
+
+w{48} = 1:49; w{49} = 1:50;
 
 for tr=1:length(w)
     mask = zeros(length(comb),1);
         
-    pairs = nchoosek(w{tr,:},2);
+    pairs = nchoosek(w{tr},2);
     
     for i=1:size(pairs,1)
         mask = (comb(:,1)==pairs(i,1) & comb(:,2)==pairs(i,2)) | (comb(:,2)==pairs(i,1) & comb(:,1)==pairs(i,2)) | mask;
@@ -33,7 +34,7 @@ end
 
 for tr=1:size(train_idx_w,1)
     
-    %% TRAINING PHASE
+    % TRAINING PHASE
     mu_s = zeros(1,length(sentences)); mu_d = mu_s;
     for idx=1:length(sentences)
         
@@ -44,7 +45,7 @@ for tr=1:size(train_idx_w,1)
         
     end
     
-    %% TEST PHASE
+    % TEST PHASE
     r_s = zeros(d, d); r_d = r_s;
 
     for i = 1:d
@@ -69,11 +70,11 @@ for tr=1:size(train_idx_w,1)
             
         end
         
-        %% BASELINE       
+        % BASELINE       
         
         [~, idx_b] = sort(s(im_idx, :),'descend');      
                
-        %% SPECIFICITY
+        % SPECIFICITY
                 
         r_s(im_idx, isnan(r_s(im_idx, :))) = -Inf;
         [~, idx_s] = sort(r_s(im_idx, :),'descend'); 
@@ -83,8 +84,9 @@ for tr=1:size(train_idx_w,1)
         
     end
     
-    %% STATS
-    fprintf('\n\nMedian rank (Baseline): %0.2f', median(rank_b));
+    % STATS
+    fprintf('\n\nTraining sentences: %d', tr);
+    fprintf('\nMedian rank (Baseline): %0.2f', median(rank_b));
     fprintf('\nMedian rank (Specificity): %0.2f', median(rank_s(tr, :)));
     fprintf('\nMean rank(Baseline): %0.2f', mean(rank_b));
     fprintf('\nMean rank(Specificity): %0.2f', mean(rank_s(tr, :)));
@@ -102,7 +104,7 @@ end
 % xlabel('Database size'); ylabel('(mean(rank-baseline) - mean(rank-specificity))/database-size');
 % title('Baseline vs Specificity (Image search)');
 
-colors = repmat(0:0.09:0.09*8,3);
+colors = fliplr(colormap(autumn(size(train_idx_w,1)))');
     
 % ACCURACY PLOT
 
@@ -114,14 +116,14 @@ for tr=1:size(train_idx_w,1)
     end
     
     if tr==1
-        plot(1:d, baseline_top_k,'b'); hold on; 
+        plot(1:d, baseline_top_k,'b', 'Linewidth',3.0); hold on; 
     end
     
     plot(1:d, spec_top_k, 'color', colors(:,tr));
     % plot(1:d, logit_top_k, 'g');
     title('Search Results (Effect of changing number of training sentences)');
     xlabel('k','Fontsize',10); ylabel('Percentage of Queries with rank<=k','Fontsize',10);
-    %legend('Baseline','Specificity (2C2)','Specificity (3C2)', 'Specificity(4C2)', 'Specificity (5C2)', 'location','SouthEast');
+    legend('Baseline','2C2', '3C2', '4C2', '5C2', '6C2', '7C2', '8C2', '9C2', '10C2', 'location','SouthEast');
     set(gca,'XLim',[0 d], 'TickDir', 'out', 'Box','off');
 end
 
@@ -132,12 +134,12 @@ end
 % set(gca, 'TickDir','out','Box','off','XTick',[1:9],'XTickLabel',{'2C2','3C2','4C2','5C2','6C2','7C2','8C2','9C2','10C2'});
 % ylabel('Mean Rank'); legend('Specificity (including reference)','Specificity (excluding reference)','Baseline');
 % title('Effect of changing number of training sentences');
-
-plot(1:9, mean(rank_s(1:9,:),2)); hold on; 
-plot([1,9], [mean(rank_b), mean(rank_b)],'r--');
-plot(1:9, mean(rank_s(1:9, :),2), 'bo', 'MarkerFaceColor', 'w');
-plot(8, mean(rank_s(8, :),2), 'go', 'MarkerFaceColor','g');
-plot(9, mean(rank_s(9, :),2), 'ro', 'MarkerFaceColor','r');
-set(gca, 'TickDir','out','Box','off','XTick',[1:10],'XTickLabel',{'2C2','3C2','4C2','5C2','6C2','7C2','8C2','9C2', '10C2'});
+figure;
+plot(1:49, mean(rank_s(1:49,:),2)); hold on; 
+plot([1,49], [mean(rank_b), mean(rank_b)],'r--');
+plot(1:49, mean(rank_s(1:49, :),2), 'bo', 'MarkerFaceColor', 'w');
+plot(48, mean(rank_s(48, :),2), 'go', 'MarkerFaceColor','g');
+plot(49, mean(rank_s(49, :),2), 'ro', 'MarkerFaceColor','r');
+set(gca, 'TickDir','out','Box','off','XTick',[10:10:50],'XTickLabel',{'10C2','20C2','30C2','40C2','50C2'});
 ylabel('Mean Rank'); legend('Specificity','Baseline');
 title('Effect of changing number of training sentences');

@@ -8,16 +8,17 @@
 % sentence_idx -- sentence index for the image (1 x 222, 1:5)
 
 clear all; close all;
-n_images = 222; % number of images
+n_images = 666; % number of images
+data_collected = 222; % number of images already collected
 n_sentences = 5; % number of sentences per image
 n_questions = 3; % number of questions per HIT
 
 %% Import csv files
-datastruct = importdata('../data/mturk/output/Sentences_results_140221.csv');
-datastruct_missing = importdata('../data/mturk/output/Sentences_results_missing.csv');
+datastruct = importdata('../data/mturk/output/Sentences_results_140317_combined.csv');
+%datastruct_missing = importdata('../data/mturk/output/Sentences_results_missing.csv');
 
 % Merge data from the two batches
-datastruct = cat(1, datastruct, datastruct_missing{2});
+%datastruct = cat(1, datastruct, datastruct_missing{2});
 
 [headers, data] = parse_csv(datastruct);
 
@@ -36,7 +37,7 @@ for i=1:n_questions
         
         if approve
             url = data{row_idx, url_idx};
-            image_idx = str2double(url(isstrprop(url,'digit')) );
+            image_idx = str2double(url(isstrprop(url,'digit')) ) - data_collected;
         
             datum = data{row_idx,ans_idx};
             if ~isempty(datum)
@@ -48,4 +49,4 @@ for i=1:n_questions
 end
 
 clearvars -except sentences;
-save('../data/sentence_descriptions.mat','sentences');
+save('../data/sentence_descriptions_140317.mat','sentences');

@@ -1,5 +1,6 @@
 # Author: Mainak Jas <mainak@neuro.hut.fi>
 
+import pdb
 import nltk
 from nltk.corpus import wordnet as wn
 
@@ -107,26 +108,37 @@ def find_sentence_similarity(sent1, sent2):
 def estimate_parameters(sentences):
     specificity_w, mu_s, sigma_s, mu_d, sigma_d = list(), list(), list(), list(), list()
 
+    n_sentences, n_images = len(sentences[0]), len(sentences)
+    scores_b = np.zeros((n_images, n_sentences, 10)) # between image similarity
+
     # iterate over images
     for im_idx, sentence_group in enumerate(sentences):
         
         other_sentences = [x for x in sent_list if x not in sent_list[im_idx*5:im_idx*5 + 5]]
 
-        similarity_b = list() # between-image similarity
-        for i in range(0, 10):
-            pick_s1 = sentence_group[np.random.randint(0,5)][0]
-            pick_s2 = other_sentences[np.random.randint(0, len(other_sentences))]
-            similarity_b.append(find_sentence_similarity(np.asarray([pick_s1]), np.asarray([pick_s2])))
+        for i, pick_s1 in enumerate(sentence_group):
+            
+            # for each sentence in the image
+            # compare similarity to 10 sentences randomly picked from other images
+            for j in range(0, 10):
+                pick_s2 = other_sentences[np.random.randint(0, len(other_sentences))]                
+                scores_b[im_idx][i][j] = find_sentence_similarity(pick_s1, np.asarray([pick_s2]))
+
+                # pick another sentence if it is a 'nan'. Try up to 5 times
+                tries = 0;
+                while np.isnan(scores_b[im_idx][i][j]) and tries<=5:
+                    pick_s2 = other_sentences[np.random.randint(0, len(other_sentences))]
+                    scores_b[im_idx][i][j] = find_sentence_similarity(pick_s1, np.asarray([pick_s2]))
+                    tries+=1
 
         # within-image similarity
         similarity_w = [find_sentence_similarity(sent1,sent2) for (sent1, sent2) in combinations(sentence_group,2)]
-        # similarity_w = [x for x in similarity_w if x!=None]
-
+        
         # Fit normal distribution
         mu, sigma = norm.fit(similarity_w)
         mu_s.append(mu); sigma_s.append(sigma)
 
-        mu, sigma = norm.fit(similarity_b)
+        mu, sigma = norm.fit(scores_b[im_idx, :, :])
         mu_d.append(mu); sigma_d.append(sigma)
 
         # Save scores and sentence pairs
@@ -140,10 +152,11 @@ def estimate_parameters(sentences):
         print >> f, ("(specificity, mu_s, sigma_s, mu_d, sigma_d) for image_%d = (%0.4f, %0.4f, %0.4f, %0.4f, %0.4f)" 
                % (im_idx, specificity_w[-1], mu_s[-1], sigma_s[-1], mu_d[-1], sigma_d[-1]))
 
-        scipy.io.savemat('../data/image_search_parameters.mat', 
-                         {'specificity_w': specificity_w, 'scores_w': scores_w,
-                         'sent_pairs': np.array(sent_pairs, dtype=object), 'mu_s': mu_s,
-                         'sigma_s': sigma_s, 'mu_d': mu_d, 'sigma_d': sigma_d})
+        # commented out below to avoid accidental overwriting
+        # scipy.io.savemat('../data/image_search_parameters.mat', 
+        #                  {'specificity_w': specificity_w, 'scores_w': scores_w, 'scores_b': scores_b,
+        #                  'sent_pairs': np.array(sent_pairs, dtype=object), 'mu_s': mu_s,
+        #                  'sigma_s': sigma_s, 'mu_d': mu_d, 'sigma_d': sigma_d})
 
     return specificity_w, mu_s, sigma_s, mu_d, sigma_d 
 
