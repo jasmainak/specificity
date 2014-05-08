@@ -1,3 +1,5 @@
+# Authors : Mainak Jas <mainak@neuro.hut.fi>
+
 import scipy.io
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -6,13 +8,14 @@ from nltk.corpus import wordnet as wn
 
 from itertools import product
 
+
 def sentence_tokenizer(dataset_name='pascal'):
     """
     Parameters
     ----------
     dataset_name : string
-        'memorability' or 'pascal' data set
-    
+        'memorability' or 'pascal' or 'clipart'
+
     Returns
     -------
     analyze : object
@@ -21,32 +24,37 @@ def sentence_tokenizer(dataset_name='pascal'):
         see scikit-learn documentation
     """
 
-    if dataset_name=='memorability':
-        mat = scipy.io.loadmat('../../data/sentences/memorability_888_img_5_sent.mat')        
+    if dataset_name == 'memorability':
+        mat = scipy.io.loadmat('../../data/sentences/memorability_888_img_5_sent.mat')
         sentences = mat['memorability_sentences']
-        
-    elif dataset_name=='pascal':
+
+    elif dataset_name == 'pascal':
         mat = scipy.io.loadmat('../../data/sentences/pascal_1000_img_50_sent.mat')
         sentences = mat['pascal_sentences']
+
+    elif dataset_name == 'clipart':
+        mat = scipy.io.loadmat('../../data/sentences/clipart_500_img_48_sent.mat')
+        sentences = mat['clipart_sentences']
 
     # Build corpus
     corpus = list()
     for sent_group in sentences:
         corpus.append(' '.join([sent[0] for sent in sent_group]))
 
-    # Build tf-idf vectorizer
-    vectorizer = TfidfVectorizer(token_pattern='(?u)\\b\\w\\w\\w+\\b') # at-least three letters in word
+    ### Build tf-idf vectorizer ###
+
+    # at-least three letters in word
+    vectorizer = TfidfVectorizer(token_pattern='(?u)\\b\\w\\w\\w+\\b')
     vectorizer.fit(corpus)
     analyze = vectorizer.build_analyzer()
 
     return analyze, vectorizer
 
 
-
-
-
 analyze_pascal, vectorizer_pascal = sentence_tokenizer('pascal')
 analyze_memorability, vectorizer_memorability = sentence_tokenizer('memorability')
+analyze_clipart, vectorizer_clipart = sentence_tokenizer('clipart')
+
 
 def find_best_match(words1, words2):
     """
@@ -77,10 +85,11 @@ def find_best_match(words1, words2):
                     best_score.append(None)
 
             if max(best_score):
-                sim.append(max(best_score))                
+                sim.append(max(best_score))
             else:
                 sim.append(None)
     return sim
+
 
 def find_sentence_similarity(sent1, sent2, dataset_name='pascal', verbose=False):
     """
@@ -91,36 +100,38 @@ def find_sentence_similarity(sent1, sent2, dataset_name='pascal', verbose=False)
     sent2 : str
         Words of the second sentence
     dataset_name : string
-        'memorability' or 'pascal' data set    
+        'memorability' or 'pascal' or 'clipart'
     verbose : bool
         Print messages if true
-    
+
     Returns
     -------
     similarity : float
         Similarity scores for two sentences
     """
 
-    if dataset_name=='pascal':
+    if dataset_name == 'pascal':
         analyze, vectorizer = analyze_pascal, vectorizer_pascal
-    else:
+    elif dataset_name == 'memorability':
         analyze, vectorizer = analyze_memorability, vectorizer_memorability
+    elif dataset_name == 'clipart':
+        analyze, vectorizer = analyze_clipart, vectorizer_clipart
 
     # Break sentences into words
     words1, words2 = analyze(sent1[0]), analyze(sent2[0])
-        
+
     # Get Tfidf weights
     sent1_weights = [vectorizer.transform(sent1).toarray()[0][vectorizer.vocabulary_.get(w)] for w in words1]
     sent2_weights = [vectorizer.transform(sent2).toarray()[0][vectorizer.vocabulary_.get(w)] for w in words2]
-    
+
     # Find similarity scores for best matching words
     sim_max = find_best_match(words1, words2) + find_best_match(words2, words1)
 
     # Take weighted average of similarity scores
-    if all(x is None for x in sim_max):            
+    if all(x is None for x in sim_max):
         similarity = float('nan')
     else:
-        (sim_cleaned, a) = zip(*[(x, w) for (x, w) in zip(sim_max, sent1_weights + sent2_weights) if x!=None])        
+        (sim_cleaned, a) = zip(*[(x, w) for (x, w) in zip(sim_max, sent1_weights + sent2_weights) if x != None])
         similarity = np.average(sim_cleaned, weights=a)
 
     if verbose:
