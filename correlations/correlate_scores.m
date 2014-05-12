@@ -4,9 +4,9 @@
 close all; 
 clearvars -except img Feat specificity scores mem mapping;
 
-addpath('aux_functions');
+addpath('../aux_functions');
 
-proj_dir = '/home/mainak/Desktop/specificity';
+proj_dir = '../../';
 img_dir = [proj_dir '/library/cvpr_memorability_data/Data/Image data'];
 
 %% Load data

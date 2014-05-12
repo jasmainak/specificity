@@ -1,11 +1,11 @@
 clearvars -except img; close all;
 
 if ~exist('img','var')
-    load('../library/cvpr_memorability_data/Data/Image data/target_images.mat');
+    load('../../library/cvpr_memorability_data/Data/Image data/target_images.mat');
 end
 
-load('../data/specificity_scores_all.mat');
-load('../data/memorability_mapping.mat');
+load('../../data/specificity_scores_all.mat');
+load('../../data/memorability_mapping.mat');
 
 for i=1:length(specificity)
     I = img(:,:,:,mapping(i));

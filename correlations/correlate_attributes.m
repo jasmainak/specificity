@@ -58,5 +58,3 @@ if strcmpi(expt, 'specificity')
         fprintf('%0.3f\t%s\n', r_specificity(idx(i)), anno_names{idx(i)});
     end
 end
-
-% fp = fopen('
