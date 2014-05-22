@@ -69,9 +69,9 @@ for run=1:50
         end
 
         if n_tr<= (n_sentences - 2)
-            choose_sent = randsample(2:n_sentences, n_tr);
+            choose_sent = randsample(2:n_sentences-1, n_tr);
         elseif n_tr== (n_sentences - 1) % include ref sentence
-            choose_sent = randsample(1:n_sentences, n_tr);
+            choose_sent = randsample(1:n_sentences-1, n_tr);
         else % include ref + query sentence
             choose_sent = randsample(1:n_sentences, n_tr);
         end
