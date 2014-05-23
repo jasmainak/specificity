@@ -1,59 +1,27 @@
 % Image search
 clear all; close all;
 
-addpath(genpath('../../library/boundedline/'));
-
 % GET USER INPUTS
 dataset = input('Enter the dataset (pascal / clipart / memorability): ', 's');
 n_jobs = input('Enter number of jobs: ');
 
 method = 'logistic';
 
-% LOAD DATASET SEARCH PARAMETERS
-if strcmpi(dataset, 'pascal')
-    load('../../data/image_search_50sentences_query.mat');
-    load('../../data/image_search_50sentences_parameters.mat');
-
-    scores_b = [];
-    for i=1:1000
-        X = load(sprintf('../../data/search_parameters/pascal/mu_d/image_search_50sentences_mud_%d.mat', i - 1), 'scores_b');
-        scores_b = cat(1, scores_b, X.scores_b);
-    end
-
-    m_sentences = 24;
-
-elseif strcmpi(dataset, 'clipart')
-
-   X = load('../../data/sentences/clipart_500_img_48_sent.mat');
-   sentences = X.clipart_sentences;
-
-   load('../../data/search_parameters/clipart/image_search_mud.mat');
-
-   scores_w = [];
-   for i=0:curr_idx
-       X = load(sprintf('../../data/search_parameters/clipart/mus/image_search_mus_%d.mat',i));
-       scores_w = cat(1, scores_w, X.scores_w);
-   end
-
-   scores_b = [];
-   for i=0:curr_idx
-       X = load(sprintf('../../data/search_parameters/clipart/mu_d/image_search_50sentences_mud_%d.mat',i));
-       scores_b = cat(1, scores_b, X.scores_b);
-   end
-
-   s = [];
-   for i=0:curr_idx
-       X = load(sprintf('../../data/search_parameters/clipart/s/image_search_s_%d.mat', i));
-       s = cat(1, s, X.s);
-   end
-
-   m_sentences = 23;
-end
-
-clear X curr_idx i;
+[scores_b, scores_w, s, sentences, m_sentences] = load_search_parameters(dataset);
 
 [n_images, n_sentences] = size(sentences);
 comb = combntns(1:n_sentences, 2);
+
+% RANKING:: BASELINE
+s(isnan(s(:))) = -Inf;
+for query_idx = 1:n_images
+    [~, idx_b] = sort(s(query_idx, :),'descend');
+    rank_b(query_idx) = find(idx_b==query_idx);
+end
+
+fprintf('Saving baseline ... ');
+save(['../../data/search_results/' dataset '/ranks_baseline.mat'],'rank_b');
+fprintf('[Done]');
 
 matlabpool('open', n_jobs);
 pctRunOnAll warning off;
@@ -130,31 +98,3 @@ for run=1:50
 end
 
 matlabpool('close');
-
-% RANKING:: BASELINE
-s(isnan(s(:))) = -Inf; 
-for query_idx = 1:n_images    
-    [~, idx_b] = sort(s(query_idx, :),'descend');
-    rank_b(query_idx) = find(idx_b==query_idx);
-end
-
-% rank_s = rank_s(1:12, :, :);
-
-rank_s_mean = squeeze(mean(rank_s,1));
-rank_s_err = std(mean(rank_s,3),0,1);
-
-% figure;
-% x_range = 2:n_sentences;
-% boundedline(x_range, mean(rank_s_mean(x_range,:),2), rank_s_err(x_range));
-% h1 = plot(x_range, mean(rank_s_mean(x_range,:),2)); hold on;
-% h2 = plot([2,n_sentences], [mean(rank_b), mean(rank_b)],'r--');
-% plot(x_range, mean(rank_s_mean(x_range, :),2), 'bo', 'MarkerFaceColor', 'w');
-% plot(49, mean(rank_s_mean(49, :),2), 'go', 'MarkerFaceColor','g');
-% plot(50, mean(rank_s_mean(50, :),2), 'ro', 'MarkerFaceColor','r');
-%
-% set(gca, 'TickDir','out','Box','off','XTick',[10:10:50], ...
-%     'XTickLabel',{'10C2','20C2','30C2','40C2','50C2'}, 'Fontsize',12);
-%
-% ylabel('Mean Rank','Fontsize',12); xlabel('Number of training sentences','Fontsize',12);
-% legend([h1, h2], 'Specificity','Baseline','Fontsize',12);
-% title('Effect of changing number of training sentences','Fontsize',14);
