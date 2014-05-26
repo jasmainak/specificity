@@ -4,91 +4,143 @@ clear all;
 addpath(genpath('../../library/libsvm-3.17/'));
 addpath(genpath('../../library/boundedline/'));
 
-experiment = 'singlereference'; % {'singlereference', 'multiplereferences'}
+runs = 50;
+features = 'decaf'; %{'decaf', 'objectness'}
+method = 'svm-rbf'; %{'rbf-svm', 'linear-svm'}
+predictor = 'logistic'; %{'logistic', 'naive'}
 
-load('../../data/pascal_1000_img_50_sent.mat', 'pascal_urls');
-load('../../data/image_search_50sentences_parameters.mat', 'scores_w');
-load('../../data/image_search_50sentences_query.mat', 's');
+n_jobs = input('Please enter the number of jobs: ', 's');
+dataset = input('Please enter the dataset (pascal/clipart): ', 's');
 
-specificity = nanmean(scores_w, 2); s(isnan(s(:))) = -Inf;
+[scores_b, scores_w, s, sentences, ~, urls] = load_search_parameters(dataset);
+[n_images, n_sentences] = size(sentences);
+
+% FIND SPECIFICITY
+for idx=1:n_images
+    y_s = scores_w(idx,:);
+    y_d = scores_b(idx,:);
+
+    len = min(length(y_s), length(y_d));
+
+    X = cat(2, y_s(1:len), y_d(1:len));
+    labels = cat(1, ones(len,1), zeros(len,1));
+
+    B(idx, :) = glmfit(X, labels, 'binomial', 'logit');
+end
+
+clear X;
+
+if strcmpi(predictor, 'logistic')
+    y = B(:, 1);
+    z = B(:, 2);
+elseif strcmpi(predictor, 'naive')
+    y = nanmean(scores_w, 2);
+end
+
+s(isnan(s(:))) = -Inf;
 
 % CLASSIFICATION FEATURES
-for i=1:length(pascal_urls)
-    filename = strsplit(pascal_urls{i}, '/');
-    load(sprintf('../../data/pascal_decaf/%s_decaf.mat',cell2mat(filename(end))), 'fc6n');
-    X(i, :) = double(fc6n); clear fc6n;
-end
+for i=1:n_images
+    filename = strsplit(urls{i}, '/');
+    mat = load(sprintf('../../data/image_features/%s/%s/%s_%s.mat', features, dataset, cell2mat(filename(end)), features));
 
-y = specificity;
-
-C=1; gamma=0.001;
-train_stop = [10:10:800];
-test_idx = [801:1000];
-
-poolobj = parpool;
-rank_b = zeros(20, length(train_stop), length(test_idx));
-rank_s = rank_b;
-
-parfor run=1:50
-    rank_b_temp = zeros(length(train_stop), length(test_idx));
-    rank_s_temp = rank_b_temp;
-    for i=1:length(train_stop)
-        
-        fprintf('\nRUN = %d, TRAINING SIZE = %d\n\n', run, train_stop(i));
-        
-        % SVM PREDICTION USING DECAF FEATURES
-        %train_idx = 1:train_stop(i);
-        train_idx = randsample(1:800, train_stop(i));
-        
-        [Z_train,mu,sigma] = zscore(X(train_idx,:));
-        
-        model = svmtrain(y(train_idx), Z_train, sprintf('-s 3 -c %d -g %f -q', C, gamma));
-        
-        sigma0 = sigma;
-        sigma0(sigma0==0) = 1;
-        Z_test = bsxfun(@minus,X(test_idx,:), mu);
-        Z_test = bsxfun(@rdivide, Z_test, sigma0);
-        
-        y_out = svmpredict(y(test_idx), Z_test, model);
-        
-        % MATCH QUERY SENTENCE WITH REFERENCE SENTENCES IN TEST SET
-        mu_s = y_out; mu_d = 0.2;
-        sigma_s = 0.1; sigma_d = sigma_s;
-        
-        s_test = s(test_idx, test_idx);
-        r_s = zeros(length(test_idx), length(test_idx)); r_d = r_s;
-        for query_idx=1:length(test_idx)
-            
-            for ref_idx=1:length(test_idx)
-                p_s = normpdf(s_test(query_idx, ref_idx), mu_s(ref_idx), sigma_s);
-                p_d = normpdf(s_test(query_idx, ref_idx), mu_d, sigma_d);
-                
-                r_s(query_idx, ref_idx) = p_s/(p_s + p_d);
-                r_d(query_idx, ref_idx) = p_d/(p_s + p_d);
-            end
-            
-            r_s(isnan(r_s(:))) = -Inf;
-            
-            [~, idx_b] = sort(s_test(query_idx, :),'descend');
-            [~, idx_s] = sort(r_s(query_idx, :), 'descend');
-            
-            rank_b_temp(i, query_idx) = find(idx_b==query_idx);
-            rank_s_temp(i, query_idx) = find(idx_s==query_idx);
-            
-        end
+    if strcmpi(features, 'decaf')
+        X(i, :) = double(mat.fc6n);
+    elseif strcmpi(features, 'objectness')
+        X(i, :) = double(mat.obj_heatmap(:));
     end
-    rank_b(run, :, :) = rank_b_temp;
-    rank_s(run, :, :) = rank_s_temp;
+
 end
 
-delete(poolobj);
-meanrank_s = squeeze(mean(rank_s, 3));
+C = [0.01, 0.1, 1, 10, 100];
+gamma = [0.1, 0.5, 1, 2, 3, 5, 10];
 
-boundedline(train_stop, mean(meanrank_s), std(meanrank_s)); hold on;
-h1 = plot(train_stop, mean(meanrank_s)); hold on; 
-plot(train_stop, mean(meanrank_s), 'bo', 'MarkerFacecolor','w','Markersize',10);
+[param1, param2] = meshgrid(C, gamma);
+params = [param1(:) param2(:)]; clear param1 param2;
 
-h2 = plot([10, train_stop(end)], [mean(rank_b(:)) mean(rank_b(:))], 'r--');
-ylabel('Mean rank','Fontsize',12); xlabel('Training data size','Fontsize',12);
-legend([h1, h2], 'Specificity', 'Baseline');
-set(gca,'Tickdir','out','Box','off','Fontsize',12);
+if strcmpi(dataset, 'pascal')
+    train_stop = [10:10:800];
+    test_idx = [801:1000];
+elseif strcmpi(dataset, 'clipart')
+    train_stop = [10:10:400];
+    test_idx = [401:500];
+end
+
+fprintf('\nSaving baseline ... ');
+s_test = s(test_idx, test_idx);
+for query_idx = 1:length(test_idx)
+    [~, idx_b] = sort(s_test(query_idx, :),'descend');
+    rank_b = find(idx_b==query_idx);
+end
+save(['../../data/predict_search/' dataset '/search_baseline.mat'], 'rank_b');
+fprintf('[Done]');
+
+matlabpool('open', n_jobs);
+
+for run=1:runs
+    for params_idx=1:length(params)
+        filename = sprintf('../../data/predict_search/%s/search_params%d_run%d_%s.mat', dataset, params_idx, run, features);
+        if exist(filename, 'file')
+            continue;
+        end
+        rank_s = zeros(length(train_stop), length(test_idx));
+        parfor i=1:length(train_stop)
+
+            fprintf('\nRUN = %d, TRAINING SIZE = %d, C = %f, gamma = %f', ...
+                    run, train_stop(i), params(params_idx, 1), params(params_idx, 2));
+
+            % SVM PREDICTION USING DECAF FEATURES
+            train_idx = randsample(train_stop(end), train_stop(i));
+            
+            [Z_train, mu, sigma] = zscore(X(train_idx,:));
+
+            % Train models for both parameters of the logistic regression model
+            model_y = svmtrain(y(train_idx), Z_train, sprintf('-s 3 -c %d -g %f -q', params(params_idx, 1), params(params_idx, 2)));
+            model_z = svmtrain(z(train_idx), Z_train, sprintf('-s 3 -c %d -g %f -q', params(params_idx, 1), params(params_idx, 2)));
+            
+            sigma0 = sigma;
+            sigma0(sigma0==0) = 1;
+            Z_test = bsxfun(@minus,X(test_idx,:), mu);
+            Z_test = bsxfun(@rdivide, Z_test, sigma0);
+            
+            y_out = svmpredict(y(test_idx), Z_test, model_y, '-q');
+            z_out = svmpredict(z(test_idx), Z_test, model_z, '-q');
+            
+            % MATCH QUERY SENTENCE WITH REFERENCE SENTENCES IN TEST SET
+            mu_s = y_out; mu_d = 0.2;
+            sigma_s = 0.1; sigma_d = sigma_s;
+            
+            s_test = s(test_idx, test_idx);
+            r_s = zeros(length(test_idx), length(test_idx)); r_d = r_s;
+            ranks = zeros(1, length(test_idx));
+            for query_idx=1:length(test_idx)
+                for ref_idx=1:length(test_idx)
+
+                    if strcmpi(predictor, 'naive')
+                        p_s = normpdf(s_test(query_idx, ref_idx), mu_s(ref_idx), sigma_s);
+                        p_d = normpdf(s_test(query_idx, ref_idx), mu_d, sigma_d);
+
+                        r_s(query_idx, ref_idx) = p_s/(p_s + p_d);
+                        r_d(query_idx, ref_idx) = p_d/(p_s + p_d);
+
+                    elseif strcmpi(predictor, 'logistic')
+                        r_s(query_idx, ref_idx) = glmval([y_out(ref_idx), z_out(ref_idx)]', s(query_idx, ref_idx), 'logit');
+                    end
+
+                end
+
+                r_s(isnan(r_s(:))) = -Inf;
+
+                [~, idx_s] = sort(r_s(query_idx, :), 'descend');
+                ranks(query_idx) = find(idx_s==query_idx);
+
+            end
+            rank_s(i, :) = ranks;
+        end
+    fprintf('\n\tSaving %s ... ', filename);
+    save(filename, 'rank_s');
+    fprintf('[Done]');
+    end
+end
+
+matlabpool('close');
