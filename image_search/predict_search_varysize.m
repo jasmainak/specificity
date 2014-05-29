@@ -53,7 +53,7 @@ for i=1:n_images
 end
 
 C = [0.01, 0.1, 1, 10, 100];
-gamma = [0.1, 0.5, 1, 2, 3, 5, 10];
+gamma = [0.0001, 0.0002, 0.0005, 0.001, 0.002];
 
 [param1, param2] = meshgrid(C, gamma);
 params = [param1(:) param2(:)]; clear param1 param2;
