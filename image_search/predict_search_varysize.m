@@ -115,8 +115,6 @@ end
 save(['../../data/predict_search/' dataset '/search_baseline.mat'], 'rank_b');
 fprintf('[Done]');
 
-matlabpool('open', n_jobs);
-
 % CALCULATING SPECIFICITY RANKINGS
 fprintf('\nCalculating specificity rankings ... \n');
 for run=1:runs
@@ -127,7 +125,7 @@ for run=1:runs
             continue;
         end
         rank_s = zeros(length(train_stop), length(test_idx));
-        parfor i=1:length(train_stop)
+        for i=1:length(train_stop)
 
             if strcmpi(method, 'rbf-svm')
                 fprintf('\nFEATURES = %s, METHOD = %s, PREDICTOR = %s \nRUN = %d, TRAINING SIZE = %d, C = %f, gamma = %f\n', ...
@@ -204,5 +202,3 @@ for run=1:runs
     fprintf('[Done]');
     end
 end
-
-matlabpool('close');
