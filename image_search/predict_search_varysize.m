@@ -1,63 +1,102 @@
-% Author: Mainak Jas
+function predict_search_varysize(features, method, predictor, dataset, n_jobs, runs)
+% Author : Mainak Jas
+%
+% Predicts the specificity parameters and uses that to rank the
+% images
+%
+% Parameters
+% ----------
+%
+% features : str
+%   'decaf' | 'objectness' | 'saliencymap' | 'decaf-objectness' | etc ...
+% method : str
+%   'rbf-svm' | 'linear-svm'
+% predictor : str
+%   'logistic' | 'gaussfit'
+% dataset : str
+%   'pascal' | 'clipart'
+% n_jobs : int
+%   number of jobs
+% runs : int
+%   number of runs
 
-clear all;
 addpath(genpath('../../library/libsvm-3.17/'));
 addpath(genpath('../../library/boundedline/'));
-
-runs = 50;
-features = 'decaf'; %{'decaf', 'objectness'}
-method = 'svm-rbf'; %{'rbf-svm', 'linear-svm'}
-predictor = 'logistic'; %{'logistic', 'naive'}
-
-n_jobs = input('Please enter the number of jobs: ', 's');
-dataset = input('Please enter the dataset (pascal/clipart): ', 's');
+addpath('../aux_functions');
 
 [scores_b, scores_w, s, sentences, ~, urls] = load_search_parameters(dataset);
-[n_images, n_sentences] = size(sentences);
+[n_images, ~] = size(sentences);
 
 % FIND SPECIFICITY
-for idx=1:n_images
-    y_s = scores_w(idx,:);
-    y_d = scores_b(idx,:);
-
-    len = min(length(y_s), length(y_d));
-
-    X = cat(2, y_s(1:len), y_d(1:len));
-    labels = cat(1, ones(len,1), zeros(len,1));
-
-    B(idx, :) = glmfit(X, labels, 'binomial', 'logit');
-end
-
-clear X;
-
+fprintf('\nCalculating specificity ... ');
 if strcmpi(predictor, 'logistic')
+
+    for idx=1:n_images
+
+        progressbar(idx, 10, n_images);
+
+        y_s = scores_w(idx,:);
+        y_d = scores_b(idx,:);
+
+        len = min(length(y_s), length(y_d));
+
+        X = cat(2, y_s(1:len), y_d(1:len));
+        labels = cat(1, ones(len,1), zeros(len,1));
+
+        B(idx, :) = glmfit(X, labels, 'binomial', 'logit');
+    end
+    clear X;
+
     y = B(:, 1);
     z = B(:, 2);
-elseif strcmpi(predictor, 'naive')
+elseif strcmpi(predictor, 'gaussfit')
     y = nanmean(scores_w, 2);
 end
 
+fprintf(' [Done]');
 s(isnan(s(:))) = -Inf;
 
 % CLASSIFICATION FEATURES
+fprintf('\nLoading classification image features ... ');
 for i=1:n_images
+    progressbar(i, 10, n_images);
     filename = strsplit(urls{i}, '/');
-    mat = load(sprintf('../../data/image_features/%s/%s/%s_%s.mat', features, dataset, cell2mat(filename(end)), features));
 
-    if strcmpi(features, 'decaf')
-        X(i, :) = double(mat.fc6n);
-    elseif strcmpi(features, 'objectness')
-        X(i, :) = double(mat.obj_heatmap(:));
+    feat = [];
+    if regexpi(features, 'decaf')
+        mat = load(sprintf('../../data/image_features/decaf/%s/%s_decaf.mat', dataset, cell2mat(filename(end))));
+        feat = [feat; double(mat.fc6n)];
     end
 
+    if regexpi(features, 'objectness')
+        mat = load(sprintf('../../data/image_features/objectness/%s/%s_objectness.mat', dataset, cell2mat(filename(end))));
+        heatmap = imresize(mat.obj_heatmap, [96, 96]);
+        feat = [feat; double(heatmap(:))];
+    end
+
+    if regexpi(features, 'saliencymap')
+        mat = load(sprintf('../../data/image_features/saliencymap/%s/%s_saliencymap.mat', dataset, cell2mat(filename(end))));
+        saliency = imresize(mat.saliencyMap, [96, 96]);
+        feat = [feat; saliency(:)];
+    end
+
+    X(i, :) = feat;
+end
+fprintf(' [Done]');
+
+% PARAMETERS TO TRY
+C = [0.01, 0.1, 1, 10, 100];
+
+if strcmpi(method, 'rbf-svm')
+    gamma = [0.0001, 0.0002, 0.0005, 0.001, 0.002];
+
+    [param1, param2] = meshgrid(C, gamma);
+    params = [param1(:) param2(:)]; clear param1 param2;
+elseif strcmpi(method, 'linear-svm')
+    params = C;
 end
 
-C = [0.01, 0.1, 1, 10, 100];
-gamma = [0.0001, 0.0002, 0.0005, 0.001, 0.002];
-
-[param1, param2] = meshgrid(C, gamma);
-params = [param1(:) param2(:)]; clear param1 param2;
-
+% TRAINING AND TEST SET SET
 if strcmpi(dataset, 'pascal')
     train_stop = [10:10:800];
     test_idx = [801:1000];
@@ -66,49 +105,72 @@ elseif strcmpi(dataset, 'clipart')
     test_idx = [401:500];
 end
 
+% CALCULATE BASELINE
 fprintf('\nSaving baseline ... ');
 s_test = s(test_idx, test_idx);
 for query_idx = 1:length(test_idx)
     [~, idx_b] = sort(s_test(query_idx, :),'descend');
-    rank_b = find(idx_b==query_idx);
+    rank_b(query_idx) = find(idx_b==query_idx);
 end
 save(['../../data/predict_search/' dataset '/search_baseline.mat'], 'rank_b');
 fprintf('[Done]');
 
 matlabpool('open', n_jobs);
 
+% CALCULATING SPECIFICITY RANKINGS
+fprintf('\nCalculating specificity rankings ... \n');
 for run=1:runs
     for params_idx=1:length(params)
-        filename = sprintf('../../data/predict_search/%s/search_params%d_run%d_%s.mat', dataset, params_idx, run, features);
+        filename = sprintf('../../data/predict_search/%s/search_params%d_run%d_%s_%s_%s.mat', ...
+                           dataset, params_idx, run, features, method, predictor);
         if exist(filename, 'file')
             continue;
         end
         rank_s = zeros(length(train_stop), length(test_idx));
         parfor i=1:length(train_stop)
 
-            fprintf('\nRUN = %d, TRAINING SIZE = %d, C = %f, gamma = %f', ...
-                    run, train_stop(i), params(params_idx, 1), params(params_idx, 2));
-
-            % SVM PREDICTION USING DECAF FEATURES
-            train_idx = randsample(train_stop(end), train_stop(i));
+            if strcmpi(method, 'rbf-svm')
+                fprintf('\nFEATURES = %s, METHOD = %s, PREDICTOR = %s \nRUN = %d, TRAINING SIZE = %d, C = %f, gamma = %f\n', ...
+                        features, method, predictor, run, train_stop(i), params(params_idx, 1), params(params_idx, 2));
+            elseif strcmpi(method, 'linear-svm')
+                fprintf('\nFEATURES = %s, METHOD = %s, PREDICTOR = %s \nRUN = %d, TRAINING SIZE = %d, C = %f\n', ...
+                        features, method, predictor, run, train_stop(i), params(params_idx));
+            end
             
+            % Select training data
+            train_idx = randsample(train_stop(end), train_stop(i));
+
+            % Normalize training features
             [Z_train, mu, sigma] = zscore(X(train_idx,:));
 
-            % Train models for both parameters of the logistic regression model
-            model_y = svmtrain(y(train_idx), Z_train, sprintf('-s 3 -c %d -g %f -q', params(params_idx, 1), params(params_idx, 2)));
-            model_z = svmtrain(z(train_idx), Z_train, sprintf('-s 3 -c %d -g %f -q', params(params_idx, 1), params(params_idx, 2)));
-            
+            % Train models for predicting specificity
+            if strcmpi(method, 'rbf-svm')
+                model_y = svmtrain(y(train_idx), Z_train, sprintf('-s 3 -c %d -g %f -q', params(params_idx, 1), params(params_idx, 2)));
+                if strcmpi(predictor, 'logistic')
+                    model_z = svmtrain(z(train_idx), Z_train, sprintf('-s 3 -c %d -g %f -q', params(params_idx, 1), params(params_idx, 2)));
+                end
+            elseif strcmpi(method, 'linear-svm')
+                model_y = svmtrain(y(train_idx), Z_train, sprintf('-s 3 -t 0 -c %d -q', params(params_idx)));
+                if strcmpi(predictor, 'logistic')
+                    model_z = svmtrain(z(train_idx), Z_train, sprintf('-s 3 -t 0 -c %d -q', params(params_idx)));
+                end
+            end
+
+            % Normalize the test features
             sigma0 = sigma;
             sigma0(sigma0==0) = 1;
             Z_test = bsxfun(@minus,X(test_idx,:), mu);
             Z_test = bsxfun(@rdivide, Z_test, sigma0);
             
+            % Predict specificity
             y_out = svmpredict(y(test_idx), Z_test, model_y, '-q');
-            z_out = svmpredict(z(test_idx), Z_test, model_z, '-q');
+            if strcmpi(predictor, 'logistic')
+                z_out = svmpredict(z(test_idx), Z_test, model_z, '-q');
+            end
             
             % MATCH QUERY SENTENCE WITH REFERENCE SENTENCES IN TEST SET
-            mu_s = y_out; mu_d = 0.2;
-            sigma_s = 0.1; sigma_d = sigma_s;
+            mu_s = y_out;
+            mu_d = 0.2; sigma_s = 0.1; sigma_d = 0.1;
             
             s_test = s(test_idx, test_idx);
             r_s = zeros(length(test_idx), length(test_idx)); r_d = r_s;
@@ -116,7 +178,7 @@ for run=1:runs
             for query_idx=1:length(test_idx)
                 for ref_idx=1:length(test_idx)
 
-                    if strcmpi(predictor, 'naive')
+                    if strcmpi(predictor, 'gaussfit')
                         p_s = normpdf(s_test(query_idx, ref_idx), mu_s(ref_idx), sigma_s);
                         p_d = normpdf(s_test(query_idx, ref_idx), mu_d, sigma_d);
 
