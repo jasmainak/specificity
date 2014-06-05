@@ -5,7 +5,7 @@ addpath(genpath('../../library/libsvm-3.17/'));
 
 features = 'gist923'; % {'gist', 'gist923', '923', 'gistarea'} % only for memorability dataset
 experiment = 'vary_size'; % {'grid_search', 'vary_size'}
-dataset = 'pascal'; % {'pascal', 'memorability'}
+dataset = 'memorability'; % {'pascal', 'memorability'}
 
 if strcmpi(dataset, 'memorability')
     img_dir = '../../library/cvpr_memorability_data/Data/Image data';
@@ -90,7 +90,7 @@ if strcmpi(experiment, 'vary_size')
     train_size = [100:100:700];
     r = zeros(length(train_size), 5);
     
-    for j=1:5
+    for j=1:10
         
         randomorder = randperm(length(specificity));
         X = X(randomorder, :);
@@ -98,18 +98,20 @@ if strcmpi(experiment, 'vary_size')
         
         for i=1:length(train_size)
             
+            fprintf('Subsample %d, Trainsize = %d\n', j, train_size(i));
+
             train_idx = 1:train_size(i); test_idx = 701:888;
             
             [Z_train,mu,sigma] = zscore(X(train_idx,:));
             
-            model = svmtrain(y(train_idx), Z_train, '-s 3');
+            model = svmtrain(y(train_idx), Z_train, '-s 3 -q');
             
             sigma0 = sigma;
             sigma0(sigma0==0) = 1;
             Z_test = bsxfun(@minus,X(test_idx,:), mu);
             Z_test = bsxfun(@rdivide, Z_test, sigma0);
             
-            y_out = svmpredict(y(test_idx), Z_test, model);
+            y_out = svmpredict(y(test_idx), Z_test, model, '-q');
             
             r(i, j) = corr(y_out, y(test_idx), 'type', 'spearman');
         end
@@ -117,9 +119,8 @@ if strcmpi(experiment, 'vary_size')
     end
     
     plot(train_size, mean(r,2)); hold on;
-    plot(train_size, mean(r,2), 'bo', 'Markersize',6,'Markerfacecolor','w');
+    plot(train_size, mean(r,2), 'bo', 'Markersize',7,'Markerfacecolor','w');
     xlabel('No. of training images','Fontsize',12);
     ylabel('Spearman''s correlation','Fontsize',12);
     set(gca,'Tickdir','out','Box','off','Fontsize',12);
-    
 end
