@@ -2,8 +2,9 @@
 clear all; warning off; close all;
 addpath(genpath('../../library/boundedline/'));
 
-method = {'logistic'}; % {'gmm', 'logistic', 'svm'}
-dataset = {'pascal'}; % {'pascal', 'memorability', 'clipart'}
+method = 'svm'; % {'gmm', 'logistic', 'svm', 'linear-svm'}
+dataset = 'pascal'; % {'pascal', 'memorability', 'clipart'}
+expt = 'gridsearch'; % {'multiruns', 'singlerun', 'gridsearch'}
 
 if strcmpi(dataset, 'pascal')
     load('../../data/image_search_50sentences_query.mat');
@@ -19,6 +20,27 @@ if strcmpi(dataset, 'pascal')
     m_sentences = 24;
 end
 
+if strcmpi(expt, 'gridsearch')
+
+    if strcmpi(method, 'svm')
+
+        C = [0.01, 0.1, 1, 10, 100];
+        gamma = [0.1, 0.5, 1, 2, 3, 5, 10];
+
+        [param1, param2] = meshgrid(C, gamma);
+        params = [param1(:) param2(:)]; clear param1 param2;
+        outerloop = 1:length(params);
+    elseif strcmpi(method, 'linear-svm') && strcmpi(expt, 'gridsearch')
+
+        C = [0.001, 0.01, 0.1, 1, 10, 100, 1000];
+        outerloop = 1:length(C);
+
+    end
+
+elseif strcmpi(expt, 'multiruns')
+    outerloop = [1:50];
+end
+
 cd('/home/mainak/Desktop/projects/specificity/library/libsvm-3.17/matlab/');
 
 [n_images, n_sentences] = size(sentences); 
@@ -26,11 +48,11 @@ cd('/home/mainak/Desktop/projects/specificity/library/libsvm-3.17/matlab/');
 % mycluster = parcluster('local'); delete(mycluster.Jobs);
 % poolobj = parpool;
 
-for run=1:1%4
+for outerloop_idx=outerloop
         
     for n_tr=50%n_sentences%2:n_sentences
         
-        fprintf('\nRUN = %d, TRAINING SENTENCES = %d\n', run, n_tr);
+        fprintf('\n%s = %d, TRAINING SENTENCES = %d\n', expt, outerloop_idx, n_tr);
         
         if n_tr<=48
             choose_sent = randsample(2:n_sentences, n_tr);
@@ -78,15 +100,25 @@ for run=1:1%4
                 
                 X = cat(2, y_s(1:len), y_d(1:len));
                 labels = cat(1, ones(len,1), zeros(len,1));
-                
-                model{idx} = svmtrain(labels, X', sprintf('-b 1 -q'));
+
+                model{outerloop_idx, idx} = svmtrain(labels, X', sprintf('-b 1 -c %f -g %f -q', params(outerloop_idx, 1), params(outerloop_idx, 2)));
+
+            elseif strcmpi(method, 'linear-svm')
+
+               len = min(length(y_s), length(y_d));
+
+               X = cat(2, y_s(1:len), y_d(1:len));
+               labels = cat(1, ones(len,1), zeros(len,1));
+
+               model{outerloop_idx, idx} = svmtrain(labels, X', sprintf('-b 1 -t 0 -c %f -q', C(outerloop_idx)));
+
             end
-                        
+
         end
                         
         % TEST PHASE
         r_s = zeros(n_images, n_images); r_d = r_s;
-        
+
         fprintf('\nTEST PHASE ');
         for query_idx = 1:n_images                       
             
@@ -105,9 +137,9 @@ for run=1:1%4
                 elseif strcmpi(method, 'logistic')
                     r_s(query_idx, ref_idx) = glmval(squeeze(B(ref_idx, :))', s(query_idx, ref_idx), 'logit');
                     
-                elseif strcmpi(method, 'svm')                    
+                elseif strcmpi(method, 'svm') || strcmpi(method, 'linear-svm')
                     y_test = 1; % set this randomly, does not matter
-                    [~, ~, prob_estimates] = svmpredict(y_test, s(query_idx, ref_idx), model{ref_idx}, '-b 1');
+                    [~, ~, prob_estimates] = svmpredict(y_test, s(query_idx, ref_idx), model{outerloop_idx, ref_idx}, '-b 1 -q');
                     r_s(query_idx, ref_idx) = prob_estimates(1);
                 
                 end
@@ -117,8 +149,8 @@ for run=1:1%4
             r_s(isnan(r_s(:))) = -Inf;           
            
             % RANKING:: SPECIFICITY
-            [~, idx] = sort(r_s(query_idx, :), 'descend');          
-            rank_s(run, n_tr, query_idx) = find(idx==query_idx);            
+            [~, idx] = sort(r_s(query_idx, :), 'descend');
+            rank_s(outerloop_idx, n_tr, query_idx) = find(idx==query_idx);
         end
          
     end
@@ -134,6 +166,11 @@ for query_idx = 1:n_images
     rank_b(query_idx) = find(idx_b==query_idx);
 end
 
-mean(rank_s(1,48,:))
+% Show the results of gridsearch
+if strcmpi(method, 'svm')
+    reshape(mean(rank_s(1:30, 50, :), 3),6,5)
+elseif strcmpi(method, 'linear-svm')
+    mean(rank_s(1:7, 50, :), 3)
+end
 
 cd('/home/mainak/Desktop/projects/specificity/scripts/image_search/');
