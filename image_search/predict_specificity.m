@@ -1,49 +1,47 @@
 % Clear variables and add paths
 
-clearvars -except Feat; close all;
+function predict_specificity()
+clear all; close all;
 addpath(genpath('../../library/libsvm-3.17/'));
 
-features = 'gist923'; % {'gist', 'gist923', '923', 'gistarea'} % only for memorability dataset
-experiment = 'vary_size'; % {'grid_search', 'vary_size'}
-dataset = 'memorability'; % {'pascal', 'memorability'}
+img_dir = '../../library/cvpr_memorability_data/Data/Image data';
+Feat = load([img_dir '/target_features.mat']);
 
-if strcmpi(dataset, 'memorability')
-    img_dir = '../../library/cvpr_memorability_data/Data/Image data';
-    
-    if ~exist('Feat','var')
-        Feat = load([img_dir '/target_features.mat']);
-    end
-    
-    load('../../data/memorability_mapping.mat');
-    load('../../data/specificity_scores_all.mat');
-    load('../../library/annotations/annotations/anno_feats.mat');
-    load('../../library/annotations/annotations/anno_names.mat');
-    
-    % Curate data
-    
-    if strcmpi(features, 'gist')
-        X = double(Feat.gist(mapping, :));
-    elseif strcmpi(features, 'gist923')
-        X = double(cat(2, Feat.gist(mapping, :), anno_feats(mapping, :)));
-    elseif strcmpi(features, '923')
-        f1 = full(max(Feat.Areas))';
-        f2 = Feat.gist;
-        X = double(cat(2, f1(mapping, :), f2(mapping, :)));
-    elseif strcmpi(features, 'gistarea')
-        X = double(anno_feats(mapping, :));
-    end
-        
-elseif strcmpi(dataset, 'pascal')
-    load('../../data/pascal_1000_img_50_sent.mat', 'pascal_urls');
-    load('../../data/image_search_50sentences_parameters.mat', 'scores_w');
-    
-    specificity = nanmean(scores_w, 2); %specificity score
-   
-    for i=1:length(pascal_urls)
-        filename = strsplit(pascal_urls{i}, '/');
-        load(sprintf('../../data/pascal_decaf/%s_decaf.mat',cell2mat(filename(end))), 'fc6');
-        X(i, :) = double(fc6); clear fc6n;
-    end
+figure;
+h1 = try_features(Feat, 'gist', 'vary_size', 'r');
+h2 = try_features(Feat, 'gist-meanarea', 'vary_size', 'g');
+h3 = try_features(Feat, 'attributes', 'vary_size', 'b');
+h4 = try_features(Feat, 'attributes-meanarea', 'vary_size', 'k');
+h5 = try_features(Feat, 'gist-attributes', 'vary_size', 'm');
+h6 = try_features(Feat, 'gist-attributes-meanarea', 'vary_size', 'y');
+
+title('Specificity Prediction using SVR');
+legend([h1, h2, h3, h4, h5, h6], 'gist', 'gistarea', 'attributes', ...
+       'attributesarea', 'gistattributes', 'gistattributesarea', ...
+       'Location', 'BestOutside');
+
+end
+
+function h = try_features(Feat, features, experiment, plotcolor)
+
+load('../../data/memorability_mapping.mat');
+load('../../data/specificity_scores_all.mat');
+load('../../library/annotations/annotations/anno_feats.mat');
+load('../../library/annotations/annotations/anno_names.mat');
+
+% Curate data
+
+X = [];
+if regexpi(features, 'gist')
+    X = cat(2, X, double(Feat.gist(mapping, :)));
+end
+
+if regexpi(features, 'attributes')
+    X = double(cat(2, X, anno_feats(mapping, :)));
+end
+
+if strcmpi(features, 'meanarea')
+    X = double(cat(2, full(mean(Feat.Areas))'));
 end
 
 y = specificity;
@@ -58,7 +56,7 @@ if strcmpi(experiment, 'grid_search')
     gamma = [0.01, 0.001, 0.0001, 0.00001, 0.000001];
     C = [1, 10, 100, 1000];
     
-    r = zeros(length(gamma), length(C), folds);    
+    r = zeros(length(gamma), length(C), folds);
     
     for k=1:length(gamma)
         for j=1:length(C)
@@ -81,14 +79,14 @@ if strcmpi(experiment, 'grid_search')
         end
     end
     
-    mean(r, 3)
+    mean(r, 3);
     
 end
 
-if strcmpi(experiment, 'vary_size')    
-    
-    train_size = [100:100:700];
-    r = zeros(length(train_size), 5);
+train_size = [100:100:700];
+r = zeros(length(train_size), 5);
+
+if strcmpi(experiment, 'vary_size')
     
     for j=1:10
         
@@ -98,7 +96,7 @@ if strcmpi(experiment, 'vary_size')
         
         for i=1:length(train_size)
             
-            fprintf('Subsample %d, Trainsize = %d\n', j, train_size(i));
+            fprintf('Feature = %s, Subsample %d, Trainsize = %d\n', features, j, train_size(i));
 
             train_idx = 1:train_size(i); test_idx = 701:888;
             
@@ -118,9 +116,12 @@ if strcmpi(experiment, 'vary_size')
         
     end
     
-    plot(train_size, mean(r,2)); hold on;
-    plot(train_size, mean(r,2), 'bo', 'Markersize',7,'Markerfacecolor','w');
-    xlabel('No. of training images','Fontsize',12);
-    ylabel('Spearman''s correlation','Fontsize',12);
-    set(gca,'Tickdir','out','Box','off','Fontsize',12);
+end
+
+h = plot(gca, train_size, mean(r,2), plotcolor); hold on;
+plot(gca, train_size, mean(r,2), [plotcolor, 'o'], 'Markersize',7,'Markerfacecolor','w');
+xlabel('No. of training images','Fontsize',12);
+ylabel('Spearman''s correlation','Fontsize',12);
+set(gca,'Tickdir','out','Box','off','Fontsize',12); drawnow;
+
 end
