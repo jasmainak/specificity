@@ -50,6 +50,6 @@ elseif strcmpi(dataset, 'clipart')
 
 end
 
-fprintf(' [Done]');
+fprintf(' [Done]\n');
 
 end

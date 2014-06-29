@@ -11,7 +11,7 @@ for i=3:length(files)
 
     fprintf('\nComputing saliency map for image ... %s\n', image_name);
     
-    filename = ['~/Desktop/projects/specificity/data/image_features/saliency/' ...
+    filename = ['~/Desktop/projects/specificity/data/image_features/saliencymap/' ...
                 dataset '/' image_name '_saliencymap.mat'];
             
     if exist(filename, 'file')

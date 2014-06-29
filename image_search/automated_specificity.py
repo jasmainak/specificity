@@ -123,7 +123,7 @@ for im_idx, sentence_group in enumerate(sentences):
 
     print "Specificity score for image_%d = (%0.4f, %0.4f)" % (im_idx, specificity_max[-1], specificity_w[-1])
 
-scipy.io.savemat('../data/specificity_automated_modified.mat', 
+scipy.io.savemat('../data/specificity_automated.mat',
                  {'specificity_max' : specificity_max, 'specificity_w': specificity_w, 'scores_w': scores_w,
                  'sent_pairs': np.array(sent_pairs, dtype=object)})
 

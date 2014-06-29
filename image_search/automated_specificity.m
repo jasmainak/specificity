@@ -1,6 +1,6 @@
 clear all;
 
-load('../data/specificity_automated_modified.mat');
+load('../data/specificity_automated.mat');
 load('../data/specificity_scores_all.mat');
 load('../data/sentences_all.mat');
 
