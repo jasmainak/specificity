@@ -25,32 +25,17 @@ addpath(genpath('../../library/boundedline/'));
 addpath('../aux_functions');
 
 [scores_b, scores_w, s, sentences, ~, urls] = load_search_parameters(dataset);
-[n_images, ~] = size(sentences);
 
 % FIND SPECIFICITY
 fprintf('\nCalculating specificity ... ');
 if strcmpi(predictor, 'logistic')
 
-    for idx=1:n_images
+    load('../../data/specificity_alldatasets.mat');
+    eval(['y = specificity.' dataset '.B0;']);
+    eval(['z = specificity.' dataset '.B1;']);
 
-        progressbar(idx, 10, n_images);
-
-        y_s = scores_w(idx,:);
-        y_d = scores_b(idx,:);
-
-        len = min(length(y_s), length(y_d));
-
-        X = cat(2, y_s(1:len), y_d(1:len));
-        labels = cat(1, ones(len,1), zeros(len,1));
-
-        B(idx, :) = glmfit(X, labels, 'binomial', 'logit');
-    end
-    clear X;
-
-    y = B(:, 1);
-    z = B(:, 2);
 elseif strcmpi(predictor, 'gaussfit')
-    y = nanmean(scores_w, 2);
+    eval(['y = specificity.' dataset '.mean;']);
 end
 
 fprintf(' [Done]');
@@ -58,30 +43,13 @@ s(isnan(s(:))) = -Inf;
 
 % CLASSIFICATION FEATURES
 fprintf('\nLoading classification image features ... ');
-for i=1:n_images
-    progressbar(i, 10, n_images);
-    filename = strsplit(urls{i}, '/');
+load(sprintf('../../data/image_features/feat_%s.mat',dataset));
 
-    feat = [];
-    if regexpi(features, 'decaf')
-        mat = load(sprintf('../../data/image_features/decaf/%s/%s_decaf.mat', dataset, cell2mat(filename(end))));
-        feat = [feat; double(mat.fc6n)];
-    end
-
-    if regexpi(features, 'objectness')
-        mat = load(sprintf('../../data/image_features/objectness/%s/%s_objectness.mat', dataset, cell2mat(filename(end))));
-        heatmap = imresize(mat.obj_heatmap, [96, 96]);
-        feat = [feat; double(heatmap(:))];
-    end
-
-    if regexpi(features, 'saliencymap')
-        mat = load(sprintf('../../data/image_features/saliencymap/%s/%s_saliencymap.mat', dataset, cell2mat(filename(end))));
-        saliency = imresize(mat.saliencyMap, [96, 96]);
-        feat = [feat; saliency(:)];
-    end
-
-    X(i, :) = feat;
+X = [];
+if regexpi(features, 'decaf')
+    X = double(cat(2, Feat.decaf));
 end
+
 fprintf(' [Done]');
 
 % PARAMETERS TO TRY
