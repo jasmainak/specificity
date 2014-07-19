@@ -153,7 +153,7 @@ for run=1:runs
                     r_d(query_idx, ref_idx) = p_d/(p_s + p_d);
 
                 elseif strcmpi(predictor, 'logistic') || strcmpi(predictor, 'groundtruth')
-                    r_s(query_idx, ref_idx) = glmval([y_out(ref_idx), z_out(ref_idx)]', s(query_idx, ref_idx), 'logit');
+                    r_s(query_idx, ref_idx) = glmval([y_out(ref_idx), z_out(ref_idx)]', s_test(query_idx, ref_idx), 'logit');
                 end
 
             end
