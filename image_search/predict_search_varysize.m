@@ -1,4 +1,4 @@
-function predict_search_varysize(features, predictor, dataset, runs)
+function predict_search_varysize(features, predictor, dataset, runs, overwrite)
 % Author : Mainak Jas
 %
 % Predicts the specificity parameters and uses that to rank the
@@ -15,6 +15,8 @@ function predict_search_varysize(features, predictor, dataset, runs)
 %   'pascal' | 'clipart'
 % runs : int
 %   number of runs
+% overwrite : bool
+%   overwrite existing files?
 
 addpath(genpath('../../library/libsvm-3.17/'));
 addpath(genpath('../../library/boundedline/'));
@@ -93,7 +95,7 @@ for run=1:runs
 
     filename = sprintf('../../data/predict_search/%s/search_run%d_%s_%s.mat', ...
         dataset, run, features, predictor);
-    if exist(filename, 'file')
+    if exist(filename, 'file') && ~overwrite
        continue;
     end
 
