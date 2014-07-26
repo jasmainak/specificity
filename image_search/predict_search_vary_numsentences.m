@@ -77,9 +77,9 @@ if ~strcmpi(predictor, 'groundtruth')
     Z_train = zscore(X(1:train_size(end), :));
 
     if ~exist(param_file, 'file')
-        [bestc.y, bestg.y] = grid_search(Z_train, y, train_size);
+        [bestc.y, bestg.y] = grid_search(Z_train, y(1:train_size(end)));
         if strcmpi(predictor, 'logistic')
-            [bestc.z, bestg.z] = grid_search(Z_train, z, train_size);
+            [bestc.z, bestg.z] = grid_search(Z_train, z(1:train_size(end)));
         end
         save(param_file, 'bestc', 'bestg', 'predictor');
     else
@@ -171,35 +171,6 @@ for run=1:runs
     fprintf('\n\tSaving %s ... ', filename);
     save(filename, 'rank_s');
     fprintf('[Done]');
-end
-
-end
-
-function [bestc, bestg] = grid_search(Z_train, y, train_size)
-
-% Grid search to select C and gamma
-
-optimalg = 1/size(Z_train,2); % 1/number of features
-bestcv = Inf;
-for log10C=-1:3
-    for g = optimalg/2:optimalg/10:optimalg*1.5
-        cv = svmtrain2(y(1:train_size(end)), Z_train, ['-s 3 -v 5 -q -c ' num2str(10^log10C) ' -g ', num2str(g)]);
-        if (cv < bestcv),
-            bestcv = cv; bestc = 10^log10C; bestg = g;
-        end
-        fprintf('\n(C=%g g=%g rate=%g) (best c=%g, best g=%g, rate=%g)', 10^log10C, g, cv, bestc, bestg, bestcv);
-    end
-end
-
-% Refine grid search
-for C=bestc/2:bestc/10:bestc*1.5
-    for g = optimalg/2:optimalg/10:optimalg*1.5
-        cv = svmtrain2(y(1:train_size(end)), Z_train, ['-s 3 -v 5 -q -c ' num2str(C) ' -g ', num2str(g)]);
-        if (cv < bestcv),
-            bestcv = cv; bestc = C; bestg = g;
-        end
-        fprintf('\n(C=%g g=%g rate=%g) (best c=%g, best g=%g, rate=%g)', C, g, cv, bestc, bestg, bestcv);
-    end
 end
 
 end
