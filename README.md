@@ -14,9 +14,9 @@ Description of scripts
 
 #### Computing features
 
-* _image_search/find_gist.m:_ Find gist features
-* _image_search/find_objectness.m:_ Find objectness features
-* _image_search/find_saliency.m:_ Find saliency features
+* _image_search/features/find_gist.m:_ Find gist features
+* _image_search/features/find_objectness.m:_ Find objectness features
+* _image_search/features/find_saliency.m:_ Find saliency features
 
 #### Computing specificity
 

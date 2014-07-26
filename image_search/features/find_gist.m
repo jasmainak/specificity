@@ -1,6 +1,6 @@
 function find_gist()
 
-addpath(genpath('../../library/gistdescriptor/'));
+addpath(genpath('../../../library/gistdescriptor/'));
 calculate_gist('memorability');
 calculate_gist('pascal');
 
@@ -8,7 +8,7 @@ end
 
 function calculate_gist(dataset)
 
-files = dir(['../../data/images/' dataset '/']);
+files = dir(['../../../data/images/' dataset '/']);
 
 param.imageSize = [256 256]; % it works also with non-square images
 param.orientationsPerScale = [8 8 8 8];

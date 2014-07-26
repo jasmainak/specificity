@@ -1,9 +1,9 @@
 clear all;
 
 dataset = input('Please enter dataset(pascal/clipart/memorability): ', 's');
-files = dir(['../../data/images/' dataset '/']);
+files = dir(['../../../data/images/' dataset '/']);
 
-cd('../../library/objectness-release-v2.2/objectness-release-v2.2/');
+cd('../../../library/objectness-release-v2.2/objectness-release-v2.2/');
 startup;
 
 for i=3:length(files)
