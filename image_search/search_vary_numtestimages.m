@@ -1,4 +1,4 @@
-function [rank_baseline, rank_specificity] = search_varysize_groundtruth(dataset, method)
+function [rank_baseline, rank_specificity] = search_vary_numtestimages(dataset, method)
 
 addpath('../aux_functions/');
 
