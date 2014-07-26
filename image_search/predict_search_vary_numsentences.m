@@ -1,4 +1,4 @@
-function predict_search_varysize(features, predictor, dataset, runs, overwrite)
+function predict_search_vary_numsentences(features, predictor, dataset, runs, overwrite)
 % Author : Mainak Jas
 %
 % Predicts the specificity parameters and uses that to rank the
