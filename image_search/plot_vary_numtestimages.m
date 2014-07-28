@@ -1,15 +1,19 @@
-clear all;
+function plot_vary_numtestimages(plot_type)
 
-%load('../../data/predict_search/pascal/groundtruth_logistic.mat');
-load('../../data/predict_search/pascal/predicted_logistic.mat');
+if strcmpi(plot_type, 'groundtruth')
+    load('../../data/predict_search/pascal/groundtruth_logistic.mat');
+elseif strcmpi(plot_type, 'predicted')
+    load('../../data/predict_search/pascal/predicted_logistic.mat');
+elseif strcmpi(plot_type, 'predicted_1000fold')
+    load('../../data/predict_search/pascal/predicted_logistic_1000fold.mat');
+else
+    load('../../data/predict_search/pascal/predicted_logistic_1000fold_python.mat');
+end
 
-rank_vars = fieldnames(rank_baseline);
-
-test_size = test_size(1:length(rank_vars));
-
+rank_s = zeros(1,length(test_size)); rank_b = zeros(1, length(test_size));
 for idx=1:length(test_size)
-    eval(['rank_s(idx) = mean(rank_specificity.' rank_vars{idx} ');']);
-    eval(['rank_b(idx) = mean(rank_baseline.' rank_vars{idx} ');']);
+    rank_s(idx) = mean(rank_specificity{idx});
+    rank_b(idx) = mean(rank_baseline{idx});
 end
 
 subplot(1,2,1);
@@ -24,3 +28,5 @@ subplot(1,2,2);
 plot(test_size, rank_b - rank_s, 'bo-', 'MarkerFacecolor', 'w');
 ylabel('Baseline rank - predicted specificity rank', 'Fontsize', 12);
 xlabel('Number of images ranked', 'Fontsize', 12);
+
+end
