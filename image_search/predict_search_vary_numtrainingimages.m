@@ -21,6 +21,7 @@ function predict_search_vary_numtrainingimages(features, predictor, dataset, run
 addpath(genpath('../../library/libsvm-3.17/'));
 addpath(genpath('../../library/boundedline/'));
 addpath('../aux_functions');
+addpath('../io');
 
 [~, ~, s, ~, ~, ~] = load_search_parameters(dataset);
 

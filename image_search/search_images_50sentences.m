@@ -1,5 +1,6 @@
 % Image search
 clear all; close all;
+addpath('../io/');
 
 % GET USER INPUTS
 dataset = input('Enter the dataset (pascal / clipart / memorability): ', 's');

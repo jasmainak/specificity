@@ -17,17 +17,17 @@ function specificity = find_specificity(dataset)
 
 fprintf('Finding specificity for dataset %s ... ', dataset);
 for idx=1:n_images
-    
+
     progressbar(idx, 10, n_images);
-    
+
     y_s = scores_w(idx,:);
     y_d = scores_b(idx,:);
-    
+
     len = min(length(y_s), length(y_d));
-    
+
     X = cat(2, y_s(1:len), y_d(1:len));
     labels = cat(1, ones(len,1), zeros(len,1));
-    
+
     B(idx, :) = glmfit(X, labels, 'binomial', 'logit');
 end
 clear X;
