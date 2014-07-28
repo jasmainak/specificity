@@ -1,6 +1,6 @@
-function compute_specificity_predicted(dataset)
+function compute_specificity_predicted(dataset, crossval)
 
-predictor = 'logistic'; n_splits=25; n_folds = 5;
+predictor = 'logistic';
 addpath(genpath('../../library/libsvm-3.17/'));
 
 load('../../data/specificity_alldatasets.mat');
@@ -28,16 +28,28 @@ else
 end
 fprintf(' [Done]\n\n');
 
-% GENERATE RANDOM 5-fold SPLITS
-split_file = ['../../data/predict_search/' dataset '/prediction_splits.mat'];
-if ~exist(split_file, 'file')
-    split = zeros(n_splits, n_images);
-    for split_idx=1:n_splits
-        split(split_idx, :) = crossvalind('Kfold', n_images, n_folds);
+if strcmpi(crossval, '5fold')
+    % GENERATE RANDOM 5-fold SPLITS
+    split_file = ['../../data/predict_search/' dataset '/prediction_splits.mat'];
+    n_splits=25; n_folds = 5;
+    if ~exist(split_file, 'file')
+        split = zeros(n_splits, n_images);
+        for split_idx=1:n_splits
+            split(split_idx, :) = crossvalind('Kfold', n_images, n_folds);
+        end
+        save(split_file, 'split');
+    else
+        load(split_file);
     end
-    save(split_file, 'split');
 else
-    load(split_file);
+    split_file = ['../../data/predict_search/' dataset '/prediction_splits_1000fold.mat'];
+    n_splits=1; n_folds = 1000;
+    if ~exist(split_file, 'file')
+        split = 1:1000;
+        save(split_file, 'split');
+    else
+        load(split_file);
+    end
 end
 
 % PREDICT SPECIFICITY
@@ -74,7 +86,7 @@ for run=1:n_splits
     y_pred(run, :) = y_out;
     z_pred(run, :) = z_out;
 end
-save(['../../data/predict_search/' dataset '/predicted_specificity.mat'], ...
+save(['../../data/predict_search/' dataset '/predicted_specificity_' crossval '.mat'], ...
      'y_pred', 'z_pred');
 
 end
