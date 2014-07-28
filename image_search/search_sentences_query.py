@@ -5,7 +5,7 @@ import numpy as np
 from joblib import Parallel, delayed
 from sklearn.feature_extraction.text import TfidfVectorizer
 from itertools import combinations
-from similarity import find_sentence_similarity # remember to reload ipython if any changes are made to similarity.py
+from utils.similarity import find_sentence_similarity # remember to reload ipython if any changes are made to similarity.py
 
 dataset_name = 'pascal' # {'memorability', 'pascal'}
 

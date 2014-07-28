@@ -6,7 +6,7 @@ from joblib import Parallel, delayed
 from itertools import combinations
 
 # remember to reload ipython if any changes are made to similarity.py
-from similarity import find_sentence_similarity
+from utils.similarity import find_sentence_similarity
 
 dataset_name = raw_input("Please enter name of data set (pascal/memorability/clipart): ")
 task = raw_input("Please enter the task (mus/mud/s): ")

@@ -5,7 +5,7 @@ import numpy as np
 from joblib import Parallel, delayed
 
 # remember to reload ipython if any changes are made to similarity.py
-from similarity import find_sentence_similarity
+from utils.similarity import find_sentence_similarity
 
 dataset_name = raw_input("Please enter name of data set (pascal/memorability/clipart): ")
 jobs = int(raw_input("Please enter number of parallel jobs: "))
