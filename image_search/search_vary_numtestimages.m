@@ -22,7 +22,6 @@ for idx=1:length(test_size)
 
     fprintf('\nTest size = %d', test_size(idx));
     test_idx = randsample(n_images, test_size(idx));
-    %test_idx = test_idx_all{idx} + 1;
     s_test = s(test_idx, test_idx);
     
     % BASELINE

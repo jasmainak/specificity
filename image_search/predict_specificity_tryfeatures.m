@@ -1,6 +1,6 @@
 % Clear variables and add paths
 
-function predict_specificity()
+function predict_specificity_tryfeatures()
 
 close all;
 addpath(genpath('../../library/libsvm-3.17/'));
