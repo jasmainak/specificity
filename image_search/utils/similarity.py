@@ -1,12 +1,12 @@
 # Authors : Mainak Jas <mainak@neuro.hut.fi>
 
-import scipy.io
-from sklearn.feature_extraction.text import TfidfVectorizer
+from itertools import product
 
 import numpy as np
-from nltk.corpus import wordnet as wn
+import scipy.io
 
-from itertools import product
+from sklearn.feature_extraction.text import TfidfVectorizer
+from nltk.corpus import wordnet as wn
 
 
 def sentence_tokenizer(dataset_name='pascal'):
@@ -75,14 +75,7 @@ def find_best_match(words1, words2):
     for w1 in words1:
             best_match, best_score = list(), list()
             for w2 in words2:
-
-                syn1 = wn.synsets(w1)
-                syn2 = wn.synsets(w2)
-
-                if syn1 and syn2:
-                    best_score.append(max(s1.path_similarity(s2) for (s1, s2) in product(syn1, syn2)))
-                else:
-                    best_score.append(None)
+                best_score.append(_find_best_score(w1, w2))
 
             if max(best_score):
                 sim.append(max(best_score))
@@ -91,7 +84,20 @@ def find_best_match(words1, words2):
     return sim
 
 
-def find_sentence_similarity(sent1, sent2, dataset_name='pascal', verbose=False):
+def _find_best_score(w1, w2):
+
+    syn1 = wn.synsets(w1)
+    syn2 = wn.synsets(w2)
+
+    if syn1 and syn2:
+        return max(s1.path_similarity(s2) for (s1, s2)
+                   in product(syn1, syn2))
+    else:
+        return None
+
+
+def find_sentence_similarity(sent1, sent2, dataset_name='pascal',
+                             verbose=False):
     """
     Parameters
     ----------
