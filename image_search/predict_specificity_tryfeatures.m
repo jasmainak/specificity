@@ -7,6 +7,26 @@ addpath(genpath('../../library/libsvm-3.17/'));
 
 figure; set(gcf, 'Position', [372, 200, 1036, 800]); 
 
+features = {'instance_occurence', 'instance_cooccurence', ...
+            'instance_abslocation', 'instance_absdepth', 'decaf'};
+n_features = length(features);
+colors = hsv(n_features);
+
+subplot(2,2,1);
+for i=1:n_features
+    try_features(features{i}, 'clipart', 'B0', 'vary_size_grid_search', colors(i, :));
+    legend(features(1:i), 'Location', 'BestOutside'); drawnow;
+end
+title('Specificity Prediciton using SVR (Clipart dataset)[B0]');
+
+subplot(2, 2, 2);
+for i=1:n_features
+    try_features(features{i}, 'clipart', 'B1', 'vary_size_grid_search', colors(i, :));
+    legend(features(1:i), 'Location', 'BestOutside'); drawnow;
+end
+title('Specificity Prediciton using SVR (Clipart dataset)[B1]');
+
+figure;
 features = {'gist', 'attributes', 'decaf', 'saliencymap', 'objectness'};
 n_features = length(features);
 colors = hsv(n_features);
@@ -92,7 +112,23 @@ if regexpi(features, 'saliencymap')
     X = double(cat(2, Feat.saliency));
 end
 
-if strcmpi(dataset, 'pascal')
+if regexpi(features, 'instance_occurence')
+    X = double(cat(2, Feat.instance_occurence));
+end
+
+if regexpi(features, 'instance_cooccurence')
+    X = double(cat(2, Feat.instance_occurence));
+end
+
+if regexpi(features, 'instance_abslocation')
+    X = double(cat(2, Feat.instance_abslocation));
+end
+
+if regexpi(features, 'instance_absdepth')
+    X = double(cat(2, Feat.instance_absdepth));
+end
+
+if strcmpi(dataset, 'pascal') || strcmpi(dataset, 'clipart')
     y = y(~isnan(y));
     X = X(~isnan(y), :);
 end
@@ -103,6 +139,8 @@ if strcmpi(dataset, 'memorability')
     train_size = 100:100:700; test_idx = 701:888;
 elseif strcmpi(dataset, 'pascal')
     train_size = 100:100:800; test_idx = 801:length(y);
+elseif strcmpi(dataset, 'clipart')
+    train_size = 50:50:400; test_idx = 401:450;
 end
 
 r_s = zeros(length(train_size), 5); r_p = r_s; r_mse = r_s;
@@ -111,7 +149,7 @@ if regexpi(experiment, 'grid_search')
     
     % Grid search to select C and gamma
     Z_train = zscore(X(1:train_size(end), :));
-    [bestc.y, bestg.y] = grid_search(Z_train, y(1:train_size(end)));
+    [bestc, bestg] = grid_search(Z_train, y(1:train_size(end)));
 else
     bestc = 1;
     bestg = 1/size(X, 2);
@@ -136,7 +174,7 @@ if regexpi(experiment, 'vary_size')
             
             [Z_train,mu,sigma] = zscore(X(train_idx,:));
             
-            model = svmtrain2(y(train_idx), Z_train, ['-s 3 -q -c ' num2str(optimalc), ' g ' num2str(bestg)]);
+            model = svmtrain2(y(train_idx), Z_train, ['-s 3 -q -c ' num2str(optimalc) ' g ' num2str(bestg)]);
             
             sigma0 = sigma;
             sigma0(sigma0==0) = 1;
