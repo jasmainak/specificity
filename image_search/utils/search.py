@@ -3,7 +3,7 @@ import numpy as np
 from progressbar import ProgressBar, SimpleProgress
 
 
-def search_specificity(s, y, z, verbose=None):
+def search_specificity(s, y, z, return_score=False, verbose=None):
     """Find specificity search ranking."""
 
     logit = LogisticRegression()
@@ -32,7 +32,10 @@ def search_specificity(s, y, z, verbose=None):
     if verbose is not None:
         pbar.finish()
 
-    return rank_s
+    if return_score:
+        return rank_s, r_s
+    else:
+        return rank_s
 
 
 def search_baseline(s, verbose=None):
