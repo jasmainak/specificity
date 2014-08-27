@@ -1,5 +1,5 @@
 clear all;
-dataset = 'pascal'; runs = 19;
+dataset = 'pascal'; runs = 20;
 features = 'decaf';
 train_size = [10:10:800];
 
@@ -32,7 +32,8 @@ meanground_s = squeeze(mean(rank_s_groundtruth, 2));
 boundedline(train_size, mean(meanrank_s, 2), std(meanrank_s, 0, 2)); hold on;
 h1 = plot(train_size, mean(meanrank_s, 2), 'bo-', 'MarkerFaceColor', 'w', 'Markersize', 6);
 h2 = plot([10, 800], [mean(rank_b,2), mean(rank_b,2)], 'r--');
-h3 = plot([10, 800], [rank_s_groundtruth, rank_s_groundtruth], 'k--');
-legend([h3, h1, h2], {'ground truth specificity', 'predicted specificity', 'baseline'});
-title('Comparison of methods (200 images)', 'Fontsize', 14);
-ylabel('Mean rank', 'Fontsize', 12); xlabel('Training size (test dataset = 200 images)', 'Fontsize', 12);
+legend([h1, h2], {'predicted specificity', 'baseline'}, ...
+       'location', 'northeast');
+title(sprintf('Increasing training size (groundtruth=%0.2f, runs=%d)',rank_s_groundtruth, runs), 'Fontsize', 14);
+ylabel('Mean rank', 'Fontsize', 12); xlabel('Training size (200 images ranked)', 'Fontsize', 12);
+set(gca,'tickdir', 'out', 'box', 'off');
