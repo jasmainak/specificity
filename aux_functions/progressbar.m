@@ -14,4 +14,8 @@ function progressbar(idx, step, n_idx)
         fprintf('.');
     end
 
+    if idx == n_idx
+        fprintf('\n')
+    end
+
 end
