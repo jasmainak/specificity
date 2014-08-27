@@ -12,19 +12,21 @@ if __name__ == '__main__':
     dataset = 'pascal'
 
     mat1 = io.loadmat('search_parameters_pascal.mat')
+    s = mat1['s']
+
     mat2 = io.loadmat('../../data/predict_search/%s/'
                       'predicted_specificity_1000fold.mat' % dataset)
+    y_pred, z_pred = mat2['y_pred'].ravel(), mat2['z_pred'].ravel()
+
     mat3 = io.loadmat('../../data/predict_search/%s/'
                       'groundtruth_specificity.mat' % dataset)
-
-    s, y, z = mat1['s'], mat2['y_pred'].ravel(), mat2['z_pred'].ravel()
-    y_pred, z_pred = mat3['y'].ravel(), mat3['z'].ravel()
+    y, z = mat3['y'].ravel(), mat3['z'].ravel()
 
     #### FIND RANKS ####
 
     rank_b = search_baseline(s, verbose=True)
-    rank_s = search_specificity(s, y, z, verbose=True)
-    rank_g = search_specificity(s, y_pred, z_pred, verbose=True)
+    rank_s = search_specificity(s, y_pred, z_pred, verbose=True)
+    rank_g = search_specificity(s, y, z, verbose=True)
     rank_p1 = search_specificity(s, y, z_pred, verbose=True)
     rank_p2 = search_specificity(s, y_pred, z, verbose=True)
 
@@ -43,8 +45,8 @@ if __name__ == '__main__':
     plt.plot(xrange(len(y)), per_b, label='baseline')
     plt.plot(xrange(len(y)), per_s, label='predicted specificity')
     plt.plot(xrange(len(y)), per_g, label='ground truth specificity')
-    plt.plot(xrange(len(y)), per_p1, label='param2-pred-param2-gt specificity')
-    plt.plot(xrange(len(y)), per_p2, label='param1-gt-param2-pred specificity')
+    plt.plot(xrange(len(y)), per_p1, label='param1-gt-param2-pred specificity')
+    plt.plot(xrange(len(y)), per_p2, label='param1-pred-param2-gt specificity')
     plt.plot(xrange(len(y)), np.array(range(len(y))) / float(len(y)) * 100,
              label='random')
     plt.legend(loc=0)
