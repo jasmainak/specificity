@@ -110,7 +110,7 @@ if __name__ == '__main__':
                 continue
 
             # compute similarity
-            refs = [ref_group[0] for ref_group in sentences]
+            refs = [ref_group[ref_idx] for ref_group in sentences]
             s = parallel(my_fun(ref, sent_group[query_idx],
                                 dataset_name=dataset_name, verbose=False)
                          for ref in refs)
