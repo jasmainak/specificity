@@ -5,6 +5,7 @@ from itertools import product
 import numpy as np
 import scipy.io
 
+# script runs correctly with scikit-learn v0.14
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import wordnet as wn
 
