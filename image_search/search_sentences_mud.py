@@ -25,7 +25,7 @@ def _load_dataset(dataset_name):
 
         mat = scipy.io.loadmat(input_filename)
         sentences = mat['clipart_sentences']
-        m_sentences = 30
+        m_sentences = 40
 
     mat = scipy.io.loadmat(input_filename)
     sentences = mat[dataset_name + '_sentences']
