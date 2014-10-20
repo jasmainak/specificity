@@ -1,6 +1,6 @@
 % Image search
 clear all; close all;
-addpath('../io/');
+addpath('../io/'); addpath('../../library/parfor_progress/');
 
 % GET USER INPUTS
 dataset = input('Enter the dataset (pascal / clipart / memorability): ', 's');
@@ -9,6 +9,12 @@ n_jobs = input('Enter number of jobs: ');
 method = 'logistic';
 
 [scores_b, scores_w, s, sentences, m_sentences] = load_search_parameters(dataset);
+
+if strcmpi(dataset, 'pascal')
+    m_sentences = 24;
+elseif strcmpi(dataset, 'clipart')
+    m_sentences = 23;
+end
 
 [n_images, n_sentences] = size(sentences);
 comb = combntns(1:n_sentences, 2);
@@ -56,6 +62,7 @@ for run=1:50
         
         B = zeros(n_images, 2);
         % TRAINING PHASE
+        fprintf('Training phase ...\n');
         parfor idx=1:n_images
             y_s = scores_w(idx,train_idx);
             y_d = scores_b(idx,1:m_sentences*(n_tr-1));
@@ -70,26 +77,31 @@ for run=1:50
 
         fprintf('Test phase ...');
         % TEST PHASE
-        r_s = zeros(n_images, n_images); r_d = r_s;
+        %r_s = zeros(n_images, n_images); r_d = r_s;
         rank_s = zeros(1,n_images);
         
-        for query_idx = 1:n_images
+        parfor_progress(n_images);
+        parfor query_idx = 1:n_images
 
-            if rem(query_idx, 10)==0
-                fprintf('.');
-            end
+            r_s = zeros(n_images, 1);
+
+            parfor_progress;
+            %if rem(query_idx, 10)==0
+            %    fprintf('.');
+            %end
             
-            parfor ref_idx=1:n_images
-                r_s(query_idx, ref_idx) = glmval(squeeze(B(ref_idx, :))', s(query_idx, ref_idx), 'logit');
+            for ref_idx=1:n_images
+                r_s(ref_idx) = glmval(squeeze(B(ref_idx, :))', s(query_idx, ref_idx), 'logit');
             end
             
             r_s(isnan(r_s(:))) = -Inf;           
            
             % RANKING:: SPECIFICITY        
-            [~, idx_s] = sort(r_s(query_idx, :),'descend');                         
+            [~, idx_s] = sort(r_s,'descend');                         
             rank_s(query_idx) = find(idx_s==query_idx);
         end
-
+        parfor_progress(0);
+        
         fprintf('\n Saving %s ... ', filename);
         save(filename, 'rank_s');
         fprintf('[Done]\n');
