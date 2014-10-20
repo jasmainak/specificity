@@ -10,12 +10,6 @@ method = 'logistic';
 
 [scores_b, scores_w, s, sentences, m_sentences] = load_search_parameters(dataset);
 
-if strcmpi(dataset, 'pascal')
-    m_sentences = 24;
-elseif strcmpi(dataset, 'clipart')
-    m_sentences = 23;
-end
-
 [n_images, n_sentences] = size(sentences);
 comb = combntns(1:n_sentences, 2);
 
@@ -63,7 +57,7 @@ for run=1:50
         B = zeros(n_images, 2);
         % TRAINING PHASE
         fprintf('Training phase ...\n');
-        parfor idx=1:n_images
+        for idx=1:n_images
             y_s = scores_w(idx,train_idx);
             y_d = scores_b(idx,1:m_sentences*(n_tr-1));
 
