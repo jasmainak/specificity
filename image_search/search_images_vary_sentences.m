@@ -74,12 +74,12 @@ for run=1:50
         %r_s = zeros(n_images, n_images); r_d = r_s;
         rank_s = zeros(1,n_images);
         
-        parfor_progress(n_images);
+        %parfor_progress(n_images);
         parfor query_idx = 1:n_images
 
             r_s = zeros(n_images, 1);
 
-            parfor_progress;
+            %parfor_progress;
             %if rem(query_idx, 10)==0
             %    fprintf('.');
             %end
@@ -94,7 +94,7 @@ for run=1:50
             [~, idx_s] = sort(r_s,'descend');                         
             rank_s(query_idx) = find(idx_s==query_idx);
         end
-        parfor_progress(0);
+        %parfor_progress(0);
         
         fprintf('\n Saving %s ... ', filename);
         save(filename, 'rank_s');
