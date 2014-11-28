@@ -42,14 +42,8 @@ if strcmpi(crossval, '5fold')
         load(split_file);
     end
 else
-    split_file = ['../../data/predict_search/' dataset '/prediction_splits_1000fold.mat'];
-    n_splits=1; n_folds = 1000;
-    if ~exist(split_file, 'file')
-        split = 1:1000;
-        save(split_file, 'split');
-    else
-        load(split_file);
-    end
+    n_splits = 1; n_folds = n_images;
+    split = 1:n_images;
 end
 
 % PREDICT SPECIFICITY
@@ -66,8 +60,8 @@ for run=1:n_splits
 
         [Z_train, mu, sigma] = zscore(X(train_idx,:));
 
-        optimalc_y = bestc.y*800/1000;
-        optimalc_z = bestc.z*800/1000;
+        optimalc_y = bestc.y*sum(train_idx)/n_images;
+        optimalc_z = bestc.z*sum(train_idx)/n_images;
 
         % Train models for predicting specificity
         model_y = svmtrain2(y(train_idx), Z_train, sprintf('-s 3 -c %d -g %f -q', optimalc_y, bestg.y));

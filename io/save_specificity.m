@@ -12,7 +12,7 @@ end
 
 function specificity = find_specificity(dataset)
 
-[scores_b, scores_w, ~, sentences, ~, ~] = load_search_parameters(dataset);
+[scores_b, scores_w, ~, sentences] = load_search_parameters(dataset);
 [n_images, ~] = size(sentences);
 
 fprintf('Finding specificity for dataset %s ... ', dataset);
@@ -20,6 +20,8 @@ for idx=1:n_images
 
     progressbar(idx, 10, n_images);
 
+    %sent_pair = sent_pairs(idx, :, :);
+    
     y_s = scores_w(idx,:);
     y_d = scores_b(idx,:);
 
@@ -34,7 +36,18 @@ clear X;
 
 specificity.B0 = B(:, 1);
 specificity.B1 = B(:, 2);
-specificity.mean = mean(scores_w, 2);
+specificity.mean = nanmean(scores_w, 2);
+
+% overwrite using B0 and B1 which doesn't contain query/ref sentences
+if strcmpi(dataset, 'pascal')
+    load('../../data/search_parameters/pascal/LR/predicted_img_2008_000032.jpg.mat')
+    specificity.B0 = B(:, 1);
+    specificity.B1 = B(:, 2);
+elseif strcmpi(dataset, 'clipart')
+    load('../../data/search_parameters/clipart/LR/predicted_img_Scene1001_0.png.mat')
+    specificity.B0 = B(:, 1);
+    specificity.B1 = B(:, 2);
+end
 
 fprintf(' [Done]\n');
 

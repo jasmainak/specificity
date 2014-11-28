@@ -1,51 +1,25 @@
-function plot_percentage_curve()
+clear all; close all;
+addpath('../../library/export_fig/');
+load('../../data/search_results/percentage_results.mat');
 
-    addpath(genpath('../aux_functions/'));
-    addpath('utils/');
+plot(pascal.stats_gt.y(:, 1), 'b-o', 'Linewidth', 2, 'MarkerSize', 7, 'MarkerFacecolor', 'w'); hold on;
+plot(clipart.stats_gt.y(:,1), 'r-s', 'Linewidth', 2, 'MarkerSize', 7, 'MarkerFacecolor', 'w');
+plot(pascal.stats_s.y(:, 1), 'b--o', 'Linewidth', 2, 'MarkerSize', 7, 'MarkerFacecolor', 'w');
+plot(clipart.stats_s.y(:, 1), 'r--s', 'Linewidth', 2, 'MarkerSize', 7, 'MarkerFacecolor', 'w');
+%plot(pascal.stats_min.y(:, 1), 'r', 'Linewidth', 2);
+%plot(clipart.stats_min.y(:, 1), 'r--', 'Linewidth', 2);
 
-    load('../../data/image_features/feat_pascal.mat');
-    load('search_parameters_pascal.mat', 's');
-    load('../../data/search_parameters/pascal/predicted_LR.mat');
+%legend('Specificity', 'Ground truth', 'Min-rank', 'pick best', 'Location', 'NorthEast');
+legend('GT-Spec (PASCAL-50S)', 'GT-Spec (ABSTRACT-50S)', ...
+    'P-Spec (PASCAL-50S)', 'P-Spec (ABSTRACT-50S)', ...
+    'Location', 'NorthEast');
 
-    feat = Feat.decaf;
-    n_images = length(s);
+set(gcf, 'Position', [680, 442, 600, 500]);
 
-    [rank_best, rank_min, rank_s, rank_b] = predict_best_method(s, y_pred, z_pred, feat);
-    rank_oracle = min([rank_min; rank_s; rank_b]);
+set(gca, 'XLim', [0 10], 'YLim', [-0.5 47], 'Box', 'off', 'Tickdir', 'out', ...
+    'Fontsize', 14, 'TickLength', [0.005, 0.005]);
+xlabel('margin K by which baseline is beaten', 'Fontsize', 14);
+ylabel('% queries baseline is beaten by at least K', 'Fontsize', 14);
+title('Retrieval curve', 'Fontsize', 16);
 
-    y_b = calculate_percentage(rank_b, rank_b, n_images);
-    [y_s, stats_s] = calculate_percentage(rank_s, rank_b, n_images);
-    [y_min, stats_min] = calculate_percentage(rank_min, rank_b, n_images);
-    [y_best, stats_best] = calculate_percentage(rank_best, rank_b, n_images);
-    [y_oracle, stats_oracle] = calculate_percentage(rank_oracle, rank_b, n_images);
-
-    plot(1:n_images, y_b); hold on;
-    %plot(1:n_images, y_s, 'k'); plot(1:n_images, y_min, 'g');
-    plot(1:n_images, y_best, 'r');
-
-    xlabel('K', 'Fontsize', 12);
-    ylabel('% of target images with rank \leq K');
-    title('Retrieval curve', 'Fontsize', 14);
-    legend('Baseline', 'Pick best', 'Location', 'SouthEast');
-    set(gca, 'Box', 'off', 'tickdir', 'out');
-
-    %magnifyOnFigure(gcf, 'initialPositionSecondaryAxes', [229.6 214.46 130.2 102.54], ...
-    %                'initialPositionMagnifier', [139.742 332.208 76.1169 49.0446]);
-    %magnifyOnFigure(gcf, 'initialPositionSecondaryAxes', [228.6 79.46 130.2 102.54], ...
-    %                'initialPositionMagnifier', [88.8 309.03 43.4 44.1401]);
-    magnifyOnFigure(gcf, 'initialPositionSecondaryAxes', [235.6 179.46 130.2 102.54], ...
-                    'initialPositionMagnifier', [97.8087 331.437 108.096 44.1401]);
-end
-
-function [y, stats] = calculate_percentage(rank, rank_b, n_images)
-
-    y = zeros(n_images, 1);
-    for k=1:n_images
-        y(k) = length(find(rank<=k))/n_images*100;
-    end
-
-    stats.lt_b = length(find(rank<rank_b))/length(rank_b)*100;
-    stats.gt_b = length(find(rank>rank_b))/length(rank_b)*100;
-    stats.eq_b = length(find(rank==rank_b))/length(rank_b)*100;
-
-end
+export_fig '../../plots/paper/percentage_results.pdf' -transparent;

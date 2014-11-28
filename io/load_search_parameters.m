@@ -1,7 +1,11 @@
-function [scores_b, scores_w, s, sentences, m_sentences, url, sent_pairs] = load_search_parameters(dataset)
+function [scores_b, scores_w, s, sentences, m_sentences, url, sent_pairs] = load_search_parameters(dataset, request_sentpairs)
 
 addpath('../aux_functions');
 fprintf('\nLoading %s dataset ... ', dataset);
+
+if nargin < 2
+    request_sentpairs = 0;
+end
 
 parameter_fname = ['../../data/search_parameters/search_parameters_' dataset '.mat'];
 if exist(parameter_fname, 'file')
@@ -9,6 +13,13 @@ if exist(parameter_fname, 'file')
     load(parameter_fname, 'scores_b', 'scores_w', 's', 'sentences', ...
          'm_sentences', 'url');  % Do not load sent_pairs as it takes a long time to load
     fprintf('[Done] \n');
+    
+    if request_sentpairs
+        fprintf('loading sent pairs ... ');
+        load(parameter_fname, 'sent_pairs');
+        fprintf('[Done]\n');
+    end
+
     return;
 end
 

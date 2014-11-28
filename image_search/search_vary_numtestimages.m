@@ -4,11 +4,15 @@ addpath('../io/'); addpath('utils/');
 
 [~, ~, s, ~, ~, ~] = load_search_parameters(dataset);
 
+if strcmpi(dataset, 'clipart')
+    s = s(51:end, 51:end); % XXX: Leave out seed images
+end
+
 if strcmpi(method, 'groundtruth')
     load('../../data/specificity_alldatasets.mat');
     eval(['y = specificity.' dataset '.B0;']);
     eval(['z = specificity.' dataset '.B1;']);
-else
+elseif strcmpi(method, 'predicted_1000fold')
     load(['../../data/predict_search/' dataset '/predicted_specificity_1000fold.mat']);
     y = y_pred(1, :); z = z_pred(1, :);
 end
@@ -33,8 +37,13 @@ for idx=1:length(test_size)
     rank_specificity{idx} = rank_s;
 
     % SAVE RESULTS
-    save(['../../data/predict_search/' dataset '/' method '_logistic_1000fold.mat'], ...
-         'rank_specificity', 'rank_baseline', 'test_size');
+    if strcmpi(method, 'groundtruth')
+        save(['../../data/predict_search/' dataset '/groundtruth_logistic.mat'], ...
+              'rank_specificity', 'rank_baseline', 'test_size');
+    elseif strcmpi(method, 'predicted_1000fold')
+        save(['../../data/predict_search/' dataset '/predicted_logistic_1000fold.mat'], ...
+              'rank_specificity', 'rank_baseline', 'test_size');
+    end
 end
 
 end

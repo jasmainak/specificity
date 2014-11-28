@@ -1,9 +1,9 @@
-dataset = 'pascal';
+dataset = 'clipart';
 
 addpath(genpath('../../library/libsvm-3.17/'));
 addpath('../io');
 
-[scores_b, scores_w, ~, sentences, ~, url, sent_pairs] = load_search_parameters(dataset);
+[scores_b, scores_w, ~, sentences, ~, url] = load_search_parameters(dataset);
 [n_images, ~] = size(sentences);
 
 % CLASSIFICATION FEATURES
@@ -11,7 +11,8 @@ fprintf('\nLoading classification image features ... ');
 load(sprintf('../../data/image_features/feat_%s.mat',dataset));
 fprintf('[Done]\n');
 
-X = double(cat(2, Feat.decaf));
+X = double(cat(2, Feat.objectOccurence, Feat.type, Feat.objectCooccurence, ...
+               Feat.x, Feat.y, Feat.z, Feat.flip));
 
 % LOADING PARAMETERS
 fprintf('\nStarting grid search ...');
@@ -59,4 +60,3 @@ end
 
 save(['../../data/search_parameters/' dataset '/predicted_LR.mat'], ...
      'y_pred', 'z_pred');
-

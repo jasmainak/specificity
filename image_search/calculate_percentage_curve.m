@@ -1,0 +1,63 @@
+function calculate_percentage_curve()
+
+    [pascal.stats_b, pascal.stats_s, pascal.stats_min, pascal.stats_gt] = do_search('pascal');
+    [clipart.stats.b, clipart.stats_s, clipart.stats_min, clipart.stats_gt] = do_search('clipart');
+
+    save('../../data/search_results/percentage_results.mat', 'pascal', 'clipart');
+
+    
+end
+
+function [stats_b, stats_s, stats_min, stats_gt] = do_search(dataset)
+
+    addpath(genpath('../aux_functions/'));
+    addpath('utils/');
+
+    % Load image features, query-ref similarities and predicted LR
+    % parameters
+    load('../../data/image_features/feat_pascal.mat');
+    load(['../../data/search_parameters/search_parameters_' dataset '.mat'], 's');
+    load(['../../data/search_parameters/' dataset '/predicted_LR.mat']);
+    
+    feat = Feat.decaf;
+    n_images = length(s);
+
+    [rank_min, rank_s, rank_b] = predict_best_method(s, y_pred, z_pred, feat);
+    
+    load('../../data/specificity_alldatasets.mat');
+    eval(['y = specificity.' dataset '.B0;']);
+    eval(['z = specificity.' dataset '.B1;']);
+    rank_gt = specificity_search(s, y, z);
+   
+    rank_oracle = min([rank_min; rank_s; rank_b]);
+
+    [y_b, stats_b] = calculate_percentage(rank_b, rank_b, n_images);
+    [y_gt, stats_gt] = calculate_percentage(rank_gt, rank_b, n_images);
+    [y_s, stats_s] = calculate_percentage(rank_s, rank_b, n_images);
+    [y_min, stats_min] = calculate_percentage(rank_min, rank_b, n_images);
+    %[y_best, stats_best] = calculate_percentage(rank_best, rank_b, n_images);
+    %[y_oracle, stats_oracle] = calculate_percentage(rank_oracle, rank_b, n_images);
+    
+end
+
+function [y, stats] = calculate_percentage(rank, rank_b, n_images)
+
+    y = zeros(n_images, 2);
+
+    for k=1:n_images
+        y(k, 1) = length(find(rank_b - rank >= k & rank_b > rank))/n_images*100;
+    end
+
+    for k=1:n_images
+        y(k, 2) = length(find(rank - rank_b >= k & rank > rank_b))/n_images*100;
+    end
+
+    stats.lt_b = length(find(rank<rank_b))/length(rank_b)*100;
+    stats.gt_b = length(find(rank>rank_b))/length(rank_b)*100;
+    stats.eq_b = length(find(rank==rank_b))/length(rank_b)*100;
+    stats.y = y;
+    stats.rank = mean(rank);
+    stats.target_ranks = rank;
+    stats.rank_b = rank_b;
+
+end

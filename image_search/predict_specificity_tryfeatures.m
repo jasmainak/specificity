@@ -2,70 +2,69 @@
 
 function predict_specificity_tryfeatures()
 
-close all;
 addpath(genpath('../../library/libsvm-3.17/'));
 
-figure; set(gcf, 'Position', [372, 200, 1036, 800]); 
+rng('default');  % to avoid surprises
 
-features = {'instance_occurence', 'instance_cooccurence', ...
-            'instance_abslocation', 'instance_absdepth', 'decaf'};
+%features = {'decaf'};
+%n_features = length(features);
+
+%for i=1:n_features
+%    try_features(features{i}, 'memorability', 'mean', 'vary_size');
+%end
+
+%for i=1:n_features
+%   try_features(features{i}, 'pascal', 'mean', 'vary_size');
+%end
+
+features = {'objectOccurence-objectcoOccurence-xyz-flip-type-pose-expression'};
 n_features = length(features);
-colors = hsv(n_features);
 
-subplot(2,2,1);
 for i=1:n_features
-    try_features(features{i}, 'clipart', 'B0', 'vary_size_grid_search', colors(i, :));
-    legend(features(1:i), 'Location', 'BestOutside'); drawnow;
+    try_features(features{i}, 'clipart', 'mean', 'vary_size');
 end
-title('Specificity Prediciton using SVR (Clipart dataset)[B0]');
 
-subplot(2, 2, 2);
-for i=1:n_features
-    try_features(features{i}, 'clipart', 'B1', 'vary_size_grid_search', colors(i, :));
-    legend(features(1:i), 'Location', 'BestOutside'); drawnow;
-end
-title('Specificity Prediciton using SVR (Clipart dataset)[B1]');
-
-figure;
-features = {'gist', 'attributes', 'decaf', 'saliencymap', 'objectness'};
-n_features = length(features);
-colors = hsv(n_features);
-
-subplot(2,2,1);
-for i=1:n_features
-    try_features(features{i}, 'memorability', 'mean', 'vary_size_grid_search', colors(i, :));
-    legend(features(1:i), 'Location', 'BestOutside'); drawnow;
-end
-title('Specificity Prediction using SVR (Memorability dataset)[mean]');
-
-features = {'gist', 'decaf', 'saliencymap', 'objectness'};
-n_features = length(features);
-colors = hsv(n_features);
-
-subplot(2,2,2);
-for i=1:n_features
-    try_features(features{i}, 'pascal', 'mean', 'vary_size_grid_search', colors(i, :));
-    legend(features(1:i), 'Location', 'BestOutside'); drawnow;
-end
-title('Specificity Prediction using SVR (Pascal dataset)[mean]');
-
-subplot(2,2,3);
-for i=1:n_features
-    try_features(features{i}, 'pascal', 'B0', 'vary_size_grid_search', colors(i, :));
-    legend(features(1:i), 'Location', 'BestOutside'); drawnow;
-end
-title('Specificity Prediction using SVR (Pascal dataset)[B0]');
-
-subplot(2,2,4);
-for i=1:n_features
-    try_features(features{i}, 'pascal', 'B1', 'vary_size_grid_search', colors(i, :));
-    legend(features(1:i), 'Location', 'BestOutside'); drawnow;
-end
-title('Specificity Prediction using SVR (Pascal dataset)[B1]');
+% 
+% figure;
+% features = {'gist', 'attributes', 'decaf', 'saliencymap', 'objectness'};
+% n_features = length(features);
+% colors = hsv(n_features);
+% 
+% subplot(2,2,1);
+% for i=1:n_features
+%     try_features(features{i}, 'memorability', 'mean', 'vary_size_grid_search', colors(i, :));
+%     legend(features(1:i), 'Location', 'BestOutside'); drawnow;
+% end
+% title('Specificity Prediction using SVR (Memorability dataset)[mean]');
+% 
+% features = {'gist', 'decaf', 'saliencymap', 'objectness'};
+% n_features = length(features);
+% colors = hsv(n_features);
+% 
+% subplot(2,2,2);
+% for i=1:n_features
+%     try_features(features{i}, 'pascal', 'mean', 'vary_size_grid_search', colors(i, :));
+%     legend(features(1:i), 'Location', 'BestOutside'); drawnow;
+% end
+% title('Specificity Prediction using SVR (Pascal dataset)[mean]');
+% 
+% subplot(2,2,3);
+% for i=1:n_features
+%     try_features(features{i}, 'pascal', 'B0', 'vary_size_grid_search', colors(i, :));
+%     legend(features(1:i), 'Location', 'BestOutside'); drawnow;
+% end
+% title('Specificity Prediction using SVR (Pascal dataset)[B0]');
+% 
+% subplot(2,2,4);
+% for i=1:n_features
+%     try_features(features{i}, 'pascal', 'B1', 'vary_size_grid_search', colors(i, :));
+%     legend(features(1:i), 'Location', 'BestOutside'); drawnow;
+% end
+% title('Specificity Prediction using SVR (Pascal dataset)[B1]');
 
 end
 
-function try_features(features, dataset, specificity_type, experiment, plotcolor)
+function try_features(features, dataset, specificity_type, experiment)
 
 % Load features
 
@@ -97,35 +96,57 @@ if regexpi(features, 'attributes')
 end
 
 if strcmpi(features, 'meanarea')
-    X = double(cat(2, full(mean(Feat.Areas))'));
+    X = double(cat(2, X, full(mean(Feat.Areas))'));
 end
 
 if regexpi(features, 'decaf')
-    X = double(cat(2, Feat.decaf));
+    X = double(cat(2, X, Feat.decaf));
 end
 
 if regexpi(features, 'objectness')
-    X = double(cat(2, Feat.objectness));
+    X = double(cat(2, X, Feat.objectness));
 end
 
 if regexpi(features, 'saliencymap')
-    X = double(cat(2, Feat.saliency));
+    X = double(cat(2, X, Feat.saliency));
 end
 
-if regexpi(features, 'instance_occurence')
-    X = double(cat(2, Feat.instance_occurence));
+if regexpi(features, 'objectOccurence')
+    X = double(cat(2, X, Feat.objectOccurence));
 end
 
-if regexpi(features, 'instance_cooccurence')
-    X = double(cat(2, Feat.instance_occurence));
+if regexpi(features, 'objectcoOccurence')
+    X = double(cat(2, X, Feat.objectCooccurence));
 end
 
-if regexpi(features, 'instance_abslocation')
-    X = double(cat(2, Feat.instance_abslocation));
+if regexpi(features, 'type')
+    X = double(cat(2, X, Feat.type));
 end
 
-if regexpi(features, 'instance_absdepth')
-    X = double(cat(2, Feat.instance_absdepth));
+if regexpi(features, 'pose')
+    X = double(cat(2, X, Feat.mike_pose));
+    X = double(cat(2, X, Feat.jenny_pose));
+end
+
+if regexpi(features, 'expression')
+    X = double(cat(2, X, Feat.mike_expression));
+    X = double(cat(2, X, Feat.jenny_expression));
+end
+
+if regexpi(features, 'x')
+    X = double(cat(2, X, Feat.x));
+end
+
+if regexpi(features, 'y')
+    X = double(cat(2, X, Feat.y));
+end
+
+if regexpi(features, 'z')
+    X = double(cat(2, X, Feat.z));
+end
+
+if regexpi(features, 'flip')
+    X = double(cat(2, X, Feat.flip));
 end
 
 if strcmpi(dataset, 'pascal') || strcmpi(dataset, 'clipart')
@@ -140,10 +161,10 @@ if strcmpi(dataset, 'memorability')
 elseif strcmpi(dataset, 'pascal')
     train_size = 100:100:800; test_idx = 801:length(y);
 elseif strcmpi(dataset, 'clipart')
-    train_size = 50:50:400; test_idx = 401:450;
+    train_size = 50:50:400; test_idx = 401:499;
 end
 
-r_s = zeros(length(train_size), 5); r_p = r_s; r_mse = r_s;
+r_mse = zeros(length(train_size), 5); r_baseline = r_mse;
 
 if regexpi(experiment, 'grid_search')
     
@@ -182,19 +203,22 @@ if regexpi(experiment, 'vary_size')
             Z_test = bsxfun(@rdivide, Z_test, sigma0);
             
             y_out = svmpredict2(y(test_idx), Z_test, model, '-q');
-
-            r_mse(i, run) = sum(abs(y_out - y(test_idx)).^2)/numel(y_out);
+            
+            y_const = mean(y)*ones(length(y_out), 1) + rand(length(y_out), 1);
+            %y_const = mean(y)*ones(length(y_out), 1);
+            
+            %r_mse(i, run) = sum(abs(y_out - y(test_idx)).^2)/numel(y_out);
+            %r_mse_const(i, run) = sum(abs(y_const - y(test_idx)).^2)/numel(y_const);
+            r_mse(i, run) = corr(y_out, y(test_idx), 'type', 'spearman');
+            r_baseline(i, run) = corr(y_const, y(test_idx), 'type', 'spearman');
+            
         end
         
     end
     
 end
 
-plot(gca, train_size, mean(r_mse, 2), '-d', 'color', plotcolor, ...
-     'Markersize',7,'Markerfacecolor','w'); hold on;
- 
-xlabel('# training images','Fontsize',12);
-ylabel('Mean squared error (MSE)','Fontsize',12);
-set(gca,'Tickdir','out','Box','off','Fontsize',12); drawnow;
+save(sprintf('../../data/predict_specificity/%s_%s.mat', dataset, features), ...
+     'r_mse', 'r_baseline', 'train_size');
 
 end

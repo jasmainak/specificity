@@ -1,8 +1,20 @@
-clear all;
-dataset = 'pascal';
+% Run compute_specificity_predicted_clean.m after this
 
-[scores_b, scores_w, ~, sentences, ~, url, sent_pairs] = load_search_parameters(dataset);
-[n_images, ~] = size(sentences);
+clear all;
+dataset = 'clipart'; overwrite = 1;
+
+[scores_b, scores_w, ~, sentences, ~, url] = load_search_parameters(dataset);
+[n_images, n_sentences] = size(sentences);
+
+comb = combntns(1:n_sentences, 2);
+pairs = nchoosek(2:n_sentences-1, 2);
+mask = zeros(length(comb), 1);
+
+for i=1:size(pairs,1)
+    mask = (comb(:,1)==pairs(i,1) & comb(:,2)==pairs(i,2)) | (comb(:,2)==pairs(i,1) & comb(:,1)==pairs(i,2)) | mask;
+end
+
+scores_w_clean = scores_w(:, mask);
 
 fprintf('Finding specificity for dataset %s ... ', dataset);
 
@@ -10,12 +22,14 @@ for predicted_idx=1:n_images
 
     split_url = strsplit(url{predicted_idx}, '/');
     filename = split_url{end};
-    fprintf('[%d] Predicted image = %s ... ', predicted_idx, filename);
+    fprintf('[%d] Predicted image = %s ... \n', predicted_idx, filename);
     load(sprintf('../../data/search_parameters/%s/mu_d_cleaned/mu_d_%d.mat', dataset, predicted_idx - 1), 'sample_idx');
-
+    start_idx = find(sample_idx(1, :), 1, 'first'); end_idx = find(sample_idx(1, :), 1, 'last');
+    sample_idx = sample_idx(:, start_idx:end_idx);   % trim leading and trailing zeros corresponding to ref/queries from sent1
+    
     fname = sprintf('../../data/search_parameters/%s/LR/predicted_img_%s.mat', dataset, filename);
 
-    if exist(fname, 'file')
+    if exist(fname, 'file') && ~overwrite
         continue;
     end
 
@@ -29,9 +43,9 @@ for predicted_idx=1:n_images
 
         progressbar(idx, 10, n_images);
 
-        sent_pair = sent_pairs(idx, :, :);
+        %sent_pair = sent_pairs(idx, :, :);
 
-        y_s = scores_w(idx,:);
+        y_s = scores_w_clean(idx,:);
         y_d = scores_b_clean(idx,:);
 
         len = min(length(y_s), length(y_d));

@@ -1,10 +1,12 @@
-function [rank_best, rank_min, rank_s, rank_b] = predict_best_method(s, y, z, feat)
+function [rank_min, rank_s, rank_b] = predict_best_method(s, y, z, feat)
 
 rng('default'); % To avoid surprises in the future
 addpath('../aux_functions/');
 addpath(genpath('../../library/libsvm-3.17/'));
 
 [rank_min, rank_s, rank_b] = rank_all_score(s, y, z);
+
+return; % flawed implementation below
 
 % get groundtruth
 ranks = [rank_b; rank_min; rank_s];
