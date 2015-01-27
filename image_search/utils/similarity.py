@@ -9,6 +9,8 @@ import scipy.io
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.corpus import wordnet as wn
 
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 def sentence_tokenizer(dataset_name='pascal'):
     """
@@ -98,7 +100,7 @@ def _find_best_score(w1, w2):
 
 
 def find_sentence_similarity(sent1, sent2, dataset_name='pascal',
-                             verbose=False):
+                             verbose=False, method='custom'):
     """
     Parameters
     ----------
@@ -126,6 +128,14 @@ def find_sentence_similarity(sent1, sent2, dataset_name='pascal',
 
     # Break sentences into words
     words1, words2 = analyze(sent1[0]), analyze(sent2[0])
+
+    if method == 'cosine':
+        similarity = cosine_similarity(vectorizer.transform(sent1),
+                                       vectorizer.transform(sent2))[0, 0]
+        if verbose:
+            print sent1, sent2, similarity
+
+        return similarity
 
     # Get Tfidf weights
     sent1_weights = [vectorizer.transform(sent1).toarray()[0][vectorizer.vocabulary_.get(w)] for w in words1]
