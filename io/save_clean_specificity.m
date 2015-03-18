@@ -2,8 +2,9 @@
 
 clear all;
 dataset = 'clipart'; overwrite = 1;
+method = 'cosine/';
 
-[scores_b, scores_w, ~, sentences, ~, url] = load_search_parameters(dataset);
+[scores_b, scores_w, ~, sentences, ~, url] = load_search_parameters('clipart_cosine');
 [n_images, n_sentences] = size(sentences);
 
 comb = combntns(1:n_sentences, 2);
@@ -23,11 +24,11 @@ for predicted_idx=1:n_images
     split_url = strsplit(url{predicted_idx}, '/');
     filename = split_url{end};
     fprintf('[%d] Predicted image = %s ... \n', predicted_idx, filename);
-    load(sprintf('../../data/search_parameters/%s/mu_d_cleaned/mu_d_%d.mat', dataset, predicted_idx - 1), 'sample_idx');
+    load(sprintf('../../data/search_parameters/%s/%smud_cleaned/mud_%d.mat', dataset, method, predicted_idx - 1), 'sample_idx');
     start_idx = find(sample_idx(1, :), 1, 'first'); end_idx = find(sample_idx(1, :), 1, 'last');
     sample_idx = sample_idx(:, start_idx:end_idx);   % trim leading and trailing zeros corresponding to ref/queries from sent1
     
-    fname = sprintf('../../data/search_parameters/%s/LR/predicted_img_%s.mat', dataset, filename);
+    fname = sprintf('../../data/search_parameters/%s/%sgt_LR/predicted_img_%s.mat', dataset, method, filename);
 
     if exist(fname, 'file') && ~overwrite
         continue;

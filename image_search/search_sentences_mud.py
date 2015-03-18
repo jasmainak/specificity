@@ -9,19 +9,19 @@ from joblib import Parallel, delayed
 from utils.similarity import find_sentence_similarity
 
 
-def _load_dataset(dataset_name):
+def _load_dataset(dataset_name, method=''):
     if dataset_name == 'memorability':
         input_filename = '../../data/sentences/memorability_888_img_5_sent.mat'
-        output_dir = '../../data/search_parameters/memorability/'
+        output_dir = '../../data/search_parameters/memorability/' + method
 
     elif dataset_name == 'pascal':
         input_filename = '../../data/sentences/pascal_1000_img_50_sent.mat'
-        output_dir = '../../data/search_parameters/pascal/'
+        output_dir = '../../data/search_parameters/pascal/' + method
         m_sentences = 40  # no of sentences per sentence in image
 
     elif dataset_name == 'clipart':
         input_filename = '../../data/sentences/clipart_500_img_48_sent.mat'
-        output_dir = '../../data/search_parameters/clipart/'
+        output_dir = '../../data/search_parameters/clipart/' + method
 
         mat = scipy.io.loadmat(input_filename)
         sentences = mat['clipart_sentences']
@@ -40,8 +40,11 @@ if __name__ == '__main__':
     dataset_name = raw_input('Please enter name of dataset (pascal/'
                              'memorability/clipart): ')
     n_jobs = int(raw_input("Please enter number of parallel jobs: "))
+    method = 'cosine'
 
-    sentences, m_sentences, urls, output_dir = _load_dataset(dataset_name)
+    sentences, m_sentences, urls, output_dir = _load_dataset(dataset_name,
+                                                             method)
+
     n_images, n_sentences = sentences.shape
     n_scores = n_sentences * m_sentences  # number of pairs for estimating mu_d
 
@@ -84,7 +87,7 @@ if __name__ == '__main__':
         similarity_b = parallel(my_fun(im_sentences[i][1],
                                        other_sentences[j][1],
                                        dataset_name=dataset_name,
-                                       verbose=False)
+                                       verbose=False, method=method)
                                 for i, j in
                                 zip(pick_within[im_idx, :],
                                     pick_others[im_idx, :]))

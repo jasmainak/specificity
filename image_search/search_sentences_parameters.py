@@ -10,18 +10,18 @@ from itertools import combinations
 from utils.similarity import find_sentence_similarity
 
 
-def _load_dataset(dataset_name):
+def _load_dataset(dataset_name, method=''):
     if dataset_name == 'memorability':
         input_filename = '../../data/sentences/memorability_888_img_5_sent.mat'
-        output_dir = '../../data/search_parameters/memorability/'
+        output_dir = '../../data/search_parameters/memorability/' + method
 
     elif dataset_name == 'pascal':
         input_filename = '../../data/sentences/pascal_1000_img_50_sent.mat'
-        output_dir = '../../data/search_parameters/pascal/'
+        output_dir = '../../data/search_parameters/pascal/' + method
 
     elif dataset_name == 'clipart':
         input_filename = '../../data/sentences/clipart_500_img_48_sent.mat'
-        output_dir = '../../data/search_parameters/clipart/'
+        output_dir = '../../data/search_parameters/clipart/' + method
 
         mat = scipy.io.loadmat(input_filename)
         sentences = mat['clipart_sentences']
@@ -39,8 +39,9 @@ if __name__ == '__main__':
                              "(pascal/memorability/clipart): ")
     task = raw_input("Please enter the task (mus/s): ")
     jobs = int(raw_input("Please enter number of parallel jobs: "))
+    method = 'cosine'
 
-    sentences, urls, output_dir = _load_dataset(dataset_name)
+    sentences, urls, output_dir = _load_dataset(dataset_name, method)
     n_images, n_sentences = sentences.shape
 
     if task == 's':
@@ -78,7 +79,7 @@ if __name__ == '__main__':
             # compute similarity
             similarity_w = parallel(my_fun(sent1, sent2,
                                            dataset_name=dataset_name,
-                                           verbose=False) for
+                                           verbose=False, method=method) for
                                     (sent1, sent2) in
                                     combinations(sent_group, 2))
 
@@ -112,7 +113,8 @@ if __name__ == '__main__':
             # compute similarity
             refs = [ref_group[ref_idx] for ref_group in sentences]
             s = parallel(my_fun(ref, sent_group[query_idx],
-                                dataset_name=dataset_name, verbose=False)
+                                dataset_name=dataset_name, verbose=False,
+                                method=method)
                          for ref in refs)
 
             # save results

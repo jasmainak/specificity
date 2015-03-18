@@ -1,7 +1,13 @@
 % Run save_clean_specificity.m after running this file
-function leave_img_similarities_out(dataset)
+function leave_img_similarities_out(dataset, method)
 
-[scores_b, scores_w, ~, sentences, m_sentences, url, sent_pairs] = load_search_parameters(dataset, 1);
+if strcmpi(method, 'cosine')
+    parameter_key = [dataset, '_', method];
+else
+    parameter_key = dataset;
+end
+
+[scores_b, scores_w, ~, sentences, m_sentences, url, sent_pairs] = load_search_parameters(parameter_key, 1);
 
 if strcmpi(dataset, 'pascal')
     k_sentences = 24; % number of sentences m_sentences must be reduced to
@@ -33,7 +39,7 @@ for predicted_idx = 0:size(scores_b,1) - 1
     fprintf('%d ... ', predicted_idx);
     sample_idx = clean_predicted_idx(predicted_idx, scores_b, sentences, m_sentences, sent_pairs, sent_idxs, k_sentences);
     fprintf('Saving ... ');
-    save(sprintf('../../data/search_parameters/%s/mu_d_cleaned/mu_d_%d.mat', dataset, predicted_idx), ...
+    save(sprintf('../../data/search_parameters/%s/%s/mud_cleaned/mud_%d.mat', dataset, method, predicted_idx), ...
          'sample_idx', 'predicted_idx', '-v7.3');
     fprintf('[Done]\n');
 end
