@@ -1,57 +1,51 @@
-import numpy as np
-import scipy.io as io
+from scipy.io import loadmat
 import matplotlib.pyplot as plt
 
-from utils.search import search_specificity, search_baseline
+mat = loadmat('../../data/search_results/percentage_results.mat',
+              squeeze_me=True, struct_as_record=False)
 
+margin = range(1, 11)
+kwargs = dict(linewidth=2, markersize=8, markeredgewidth=2,
+              markerfacecolor='w')
+plt.figure(figsize=(7, 6))
 
-if __name__ == '__main__':
+plt.plot(margin, mat['pascal'].stats_gt.y[:10, 0], 'b-o', markeredgecolor='b',
+         label='GT-Spec (PASCAL-50S)', **kwargs)
+plt.plot(margin, mat['clipart'].stats_gt.y[:10, 0], 'r-s', markeredgecolor='r',
+         label='GT-Spec (ABSTRACT-50S)', **kwargs)
+plt.plot(margin, mat['pascal'].stats_s.y[:10, 0], 'b--o', markeredgecolor='b',
+         label='P-Spec (PASCAL-50S)', **kwargs)
+plt.plot(margin, mat['clipart'].stats_s.y[:10, 0], 'r--s', markeredgecolor='r',
+         label='P-Spec (ABSTRACT-50S)', **kwargs)
 
-    #### LOAD DATA ####
+plt.yticks(range(0, 50, 5))
 
-    dataset = 'pascal'
+# remove top and right axis
+ax = plt.gca()
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.xaxis.set_ticks_position('bottom')
+ax.yaxis.set_ticks_position('left')
 
-    mat1 = io.loadmat('search_parameters_pascal.mat')
-    s = mat1['s']
+plt.legend(numpoints=1)
+plt.xlim((0, 10.15))
+plt.ylim((-0.5, 47))
+plt.xlabel('margin K by which baseline is beaten', fontsize=16)
+plt.ylabel('% queries baseline is beaten by at least K', fontsize=16)
+plt.rc("xtick", direction="out")
+plt.rc("ytick", direction="out")
+plt.rc('xtick', labelsize=14)
+plt.rc('ytick', labelsize=14)
 
-    mat2 = io.loadmat('../../data/search_parameters/%s/'
-                      'predicted_LR.mat' % dataset)
-    y_pred, z_pred = mat2['y_pred'].ravel(), mat2['z_pred'].ravel()
+# TODO: use Helvetica fonts :)
 
-    #mat3 = io.loadmat('../../data/predict_search/%s/'
-    #                  'groundtruth_specificity.mat' % dataset)
-    #y, z = mat3['y'].ravel(), mat3['z'].ravel()
+plt.tight_layout(pad=0.1)
 
-    #### FIND RANKS ####
+plt.show()
 
-    rank_b = search_baseline(s, verbose=True)
-    rank_s = search_specificity(s, y_pred, z_pred, verbose=True)
-    #rank_g = search_specificity(s, y, z, verbose=True)
-    #rank_p1 = search_specificity(s, y, z_pred, verbose=True)
-    #rank_p2 = search_specificity(s, y_pred, z, verbose=True)
-
-    #### CALCULATE RETRIEVAL CURVE ####
-    #per_b, per_s, per_g, per_p1, per_p2 = [], [], [], [], []
-    per_b, per_s = [], []
-    for i in xrange(len(y_pred)):
-        per_b.append(len(rank_b[rank_b <= i]) / float(len(y_pred)) * 100)
-        per_s.append(len(rank_s[rank_s <= i]) / float(len(y_pred)) * 100)
-        #per_g.append(len(rank_g[rank_g <= i]) / float(len(y)) * 100)
-        #per_p1.append(len(rank_p1[rank_p1 <= i]) / float(len(y)) * 100)
-        #per_p2.append(len(rank_p2[rank_p2 <= i]) / float(len(y)) * 100)
-
-    #### PLOT RETRIEVAL CURVE ####
-
-    plt.figure(figsize=(10, 8))
-    plt.plot(xrange(len(y_pred)), per_b, 'b-', label='baseline')
-    plt.plot(xrange(len(y_pred)), per_s, 'r-', label='predicted specificity')
-    #plt.plot(xrange(len(y)), per_g, label='ground truth specificity')
-    #plt.plot(xrange(len(y)), per_p1, label='param1-gt-param2-pred specificity')
-    #plt.plot(xrange(len(y)), per_p2, label='param1-pred-param2-gt specificity')
-    #plt.plot(xrange(len(y)), np.array(range(len(y))) / float(len(y)) * 100,
-    #         label='random')
-    plt.legend(loc=0)
-    plt.xlabel('Rank <= x', fontsize=14)
-    plt.ylabel('Percentage', fontsize=14)
-
-    plt.show()
+# save figure
+fig = plt.gcf()
+fig.savefig('../../plots/paper/percentage_results.pdf', bbox='tight',
+            pad_inches=0)
+# plt.subplots_adjust(left=0., bottom=0., right=1., top=1., wspace=0.,
+#                            hspace=0.)

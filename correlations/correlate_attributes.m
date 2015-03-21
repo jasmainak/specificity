@@ -51,8 +51,8 @@ end
 %end
 %fclose(fp);
 
-old_names = {'BR_building', 'area_plant', 'clear_sky', 'count_window', 'count_ground'};
-new_names = {'building', 'plant', 'sky', 'window', 'ground'};
+old_names = {'BR_building', 'area_plant', 'clear_sky', 'count_window', 'count_ground', 'a/airport_terminal'};
+new_names = {'building', 'plant', 'sky', 'window', 'ground', 'airport terminal'};
 %old_names = {'representation', 'sky_present', 'face_visible', 'race_C', 'is_strange', 'recognize_place', 'attire_cas'};
 %new_names = {'presentation, display', 'is sky present?', 'is face visible?', 'race is Caucasian', 'is strange?', 'recognize place?', 'casual attire'};
 
@@ -149,7 +149,7 @@ if strcmpi(expt, 'specificity')
     set(gca, 'XTick', 1:20, 'XTickLabel', ...
         [anno_names_min(idx(end:-1:end-9)), anno_names_min(idx(1:10))], ...
         'XLim', [0 21], 'Fontsize', 12, 'TickLength', [0.007, 0.007]);
-    rotateXLabels(gca, 90); grid on;
+    rotateXLabels(gca, 45); grid on;
     ylabel('Spearman''s \rho', 'Fontsize', 12);
 end
 

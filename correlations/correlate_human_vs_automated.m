@@ -58,7 +58,7 @@ subplot(2,2,1, 'Position', [x_pos(1), y_pos(1), width, height]);
 
 hist(specificity, 50);
 h = findobj(gca,'Type','patch');
-set(h,'Facecolor','b', 'Linestyle', 'none');
+%set(h,'Facecolor','b', 'Linestyle', 'none');
 
 set(gca, 'XTick', 0:0.2:1, 'TickLength', [0.005; 0.025], 'FontSize', 13);
 title('MEM-5S (human)', 'Fontsize', 14);
@@ -71,7 +71,7 @@ for i=2:4
     subplot(2,2,i, 'Position', [x_pos(i), y_pos(i), width, height]);
     eval(sprintf('hist(S.specificity.%s.mean, 25);', datasets{i-1}));
     h = findobj(gca,'Type','patch');
-    set(h,'Facecolor','b', 'Linestyle', 'none');
+    %set(h,'Facecolor','b', 'Linestyle', 'none');
 
     set(gca, 'XTick', 0:0.2:1, 'TickLength', [0.005; 0.025], 'FontSize', 13, ...
         'XLim', [0 1]);

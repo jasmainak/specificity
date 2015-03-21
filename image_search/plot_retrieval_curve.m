@@ -57,8 +57,8 @@ plot(49, pascal_mean(end-1), 'go', 'MarkerFaceColor','g');
 plot(50, pascal_mean(end), 'ko', 'MarkerFaceColor','k');
 annotation('textarrow', [0.875, 0.875], [0.34, 0.26], 'Color', [0.5, 0.5, 0.5], 'Linewidth', 1);
 text(49, 68, '2.5%', 'Fontsize', 14);
-annotation('textarrow', [0.4, 0.27], [0.63, 0.35], 'Color', [0.5, 0.5, 0.5], 'Linewidth', 1);
-text(13, 120, sprintf('%d sentences', find(clipart_mean < baseline_clipart, 1, 'first') + 1), 'Fontsize', 14);
+annotation('textarrow', [0.4, 0.27], [0.6, 0.35], 'Color', [0.5, 0.5, 0.5], 'Linewidth', 1);
+text(13, 117, sprintf('specificity outperforms\n baseline after %d sentences', find(clipart_mean < baseline_clipart, 1, 'first') + 1), 'Fontsize', 14);
 
 boundedline(2:48, clipart_mean, clipart_std, 'r');
 h2 = plot(2:48, clipart_mean, 'rs-', 'MarkerFaceColor', 'w');
@@ -66,8 +66,8 @@ plot(47, clipart_mean(end-1), 'gs', 'MarkerFaceColor', 'g');
 plot(48, clipart_mean(end), 'ks', 'MarkerFaceColor', 'k');
 annotation('textarrow', [0.905, 0.905], [0.185, 0.125], 'Color', [0.5, 0.5, 0.5], 'Linewidth', 1);
 text(50.5, 46, '1.0%', 'Fontsize', 14);
-annotation('textarrow', [0.53, 0.4], [0.5, 0.2], 'Color', [0.5, 0.5, 0.5], 'Linewidth', 1);
-text(21, 100.5, sprintf('%d sentences', find(pascal_mean < baseline_pascal, 1, 'first') + 1), 'Fontsize', 14);
+annotation('textarrow', [0.53, 0.4], [0.47, 0.2], 'Color', [0.5, 0.5, 0.5], 'Linewidth', 1);
+text(21, 97.5, sprintf('specificity outperforms \nbaseline after %d sentences', find(pascal_mean < baseline_pascal, 1, 'first') + 1), 'Fontsize', 14);
 
 h3 = plot([2, 50], [baseline_pascal, baseline_pascal],'b--');
 h4 = plot([2, 48], [baseline_clipart, baseline_clipart], 'r--');
