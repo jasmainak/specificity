@@ -89,5 +89,4 @@ set(gca, 'XTick', 1:20, 'XTickLabel', ...
 rotateXLabels(gca, 45); grid on;
 ylabel('Spearman''s \rho', 'Fontsize', 12);
 
-
 export_fig '../../plots/paper/attribute_correlations.pdf' -transparent;
