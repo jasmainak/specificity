@@ -43,3 +43,14 @@ Description of scripts
 * _image_search/grid_search.m:_ Do a grid search on SVR parameters C/gamma and return the best values
 * _image_search/similary.py:_ Functions to compute tfidf score, find best match and compute sentence similarity
 * _image_search/load_search_parameters:_ Load the data produced in image_search/search_sentences_mud.py and image_search/search_sentences_parameters.py
+
+## Citation
+
+Please cite the following publication if you use this code in your research:
+
+@inproceedings{jas2015specificity,
+Author = {Mainak Jas and Devi Parikh},
+Title = {{Image Specificity}},
+Year = {2015},
+booktitle = {{IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}}
+}

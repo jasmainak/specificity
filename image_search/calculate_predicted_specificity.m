@@ -5,23 +5,12 @@ function calculate_predicted_specificity()
 addpath(genpath('../../library/libsvm-3.17/'));
 rng('default');  % to avoid surprises
 
-features = {'decaf'};
-n_features = length(features);
+features = 'decaf';
+try_features(features, 'memorability', 'mean', 'vary_size');
+try_features(features, 'pascal', 'mean', 'vary_size');
 
-for i=1:n_features
-   try_features(features{i}, 'memorability', 'mean', 'vary_size');
-end
-
-for i=1:n_features
-  try_features(features{i}, 'pascal', 'mean', 'vary_size');
-end
-
-features = {'objectOccurence-objectcoOccurence-xyz-flip-type-pose-expression'};
-n_features = length(features);
-
-for i=1:n_features
-    try_features(features{i}, 'clipart', 'mean', 'vary_size');
-end
+features = 'objectOccurence-objectcoOccurence-xyz-flip-type';
+try_features(features, 'clipart', 'mean', 'vary_size');
 
 end
 
@@ -108,7 +97,7 @@ elseif strcmpi(dataset, 'clipart')
     train_size = 50:50:400; test_idx = 401:499;
 end
 
-r_spearman = zeros(length(train_size), 5);
+r_spearman = zeros(length(train_size), 50);
 
 if regexpi(experiment, 'grid_search')
     
