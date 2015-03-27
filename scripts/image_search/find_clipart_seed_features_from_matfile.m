@@ -1,4 +1,7 @@
-clear all;
+% Seed features for clipart
+% Author: Mainak Jas
+
+clear all; close all;
 load('../../../data/image_features/cvpr_2013_seed_occurence_feat.mat');
 
 load('../../../data/sentences/clipart_500_img_48_sent.mat', 'clipart_urls');

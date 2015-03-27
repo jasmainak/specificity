@@ -1,4 +1,4 @@
-function compute_specificity_predicted(dataset, crossval)
+function calculate_predicted_LR_specificity(dataset, crossval)
 
 predictor = 'logistic';
 addpath(genpath('../../library/libsvm-3.17/'));

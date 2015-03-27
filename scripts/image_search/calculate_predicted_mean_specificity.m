@@ -1,6 +1,6 @@
-% Calculate predicted specificity using SVR
+% Calculate predicted mean specificity using SVR
 % Author: Mainak Jas
-function calculate_predicted_specificity()
+function calculate_predicted_mean_specificity()
 
 addpath(genpath('../../library/libsvm-3.17/'));
 rng('default');  % to avoid surprises
