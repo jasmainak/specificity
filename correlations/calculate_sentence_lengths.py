@@ -6,7 +6,6 @@ mat = io.loadmat('../../data/sentences/memorability_888_img_5_sent.mat')
 sentences = mat['memorability_sentences']
 
 # at-least three letters in word
-#vectorizer = TfidfVectorizer(token_pattern='(?u)\\b\\w\\w\\w+\\b')
 vectorizer = TfidfVectorizer(min_df=0, token_pattern=r"\b\w+\b")
 analyze = vectorizer.build_analyzer()
 
