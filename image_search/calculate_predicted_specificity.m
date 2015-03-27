@@ -1,21 +1,20 @@
-% Clear variables and add paths
-
-function predict_specificity_tryfeatures()
+% Calculate predicted specificity using SVR
+% Author: Mainak Jas
+function calculate_predicted_specificity()
 
 addpath(genpath('../../library/libsvm-3.17/'));
-
 rng('default');  % to avoid surprises
 
-%features = {'decaf'};
-%n_features = length(features);
+features = {'decaf'};
+n_features = length(features);
 
-%for i=1:n_features
-%    try_features(features{i}, 'memorability', 'mean', 'vary_size');
-%end
+for i=1:n_features
+   try_features(features{i}, 'memorability', 'mean', 'vary_size');
+end
 
-%for i=1:n_features
-%   try_features(features{i}, 'pascal', 'mean', 'vary_size');
-%end
+for i=1:n_features
+  try_features(features{i}, 'pascal', 'mean', 'vary_size');
+end
 
 features = {'objectOccurence-objectcoOccurence-xyz-flip-type-pose-expression'};
 n_features = length(features);
@@ -23,44 +22,6 @@ n_features = length(features);
 for i=1:n_features
     try_features(features{i}, 'clipart', 'mean', 'vary_size');
 end
-
-% 
-% figure;
-% features = {'gist', 'attributes', 'decaf', 'saliencymap', 'objectness'};
-% n_features = length(features);
-% colors = hsv(n_features);
-% 
-% subplot(2,2,1);
-% for i=1:n_features
-%     try_features(features{i}, 'memorability', 'mean', 'vary_size_grid_search', colors(i, :));
-%     legend(features(1:i), 'Location', 'BestOutside'); drawnow;
-% end
-% title('Specificity Prediction using SVR (Memorability dataset)[mean]');
-% 
-% features = {'gist', 'decaf', 'saliencymap', 'objectness'};
-% n_features = length(features);
-% colors = hsv(n_features);
-% 
-% subplot(2,2,2);
-% for i=1:n_features
-%     try_features(features{i}, 'pascal', 'mean', 'vary_size_grid_search', colors(i, :));
-%     legend(features(1:i), 'Location', 'BestOutside'); drawnow;
-% end
-% title('Specificity Prediction using SVR (Pascal dataset)[mean]');
-% 
-% subplot(2,2,3);
-% for i=1:n_features
-%     try_features(features{i}, 'pascal', 'B0', 'vary_size_grid_search', colors(i, :));
-%     legend(features(1:i), 'Location', 'BestOutside'); drawnow;
-% end
-% title('Specificity Prediction using SVR (Pascal dataset)[B0]');
-% 
-% subplot(2,2,4);
-% for i=1:n_features
-%     try_features(features{i}, 'pascal', 'B1', 'vary_size_grid_search', colors(i, :));
-%     legend(features(1:i), 'Location', 'BestOutside'); drawnow;
-% end
-% title('Specificity Prediction using SVR (Pascal dataset)[B1]');
 
 end
 
@@ -90,25 +51,8 @@ if regexpi(features, 'gist')
     end
 end
 
-if regexpi(features, 'attributes')
-    load('../../data/memorability_mapping.mat');
-    X = double(cat(2, X, Feat.anno_feats(mapping, :)));
-end
-
-if strcmpi(features, 'meanarea')
-    X = double(cat(2, X, full(mean(Feat.Areas))'));
-end
-
 if regexpi(features, 'decaf')
     X = double(cat(2, X, Feat.decaf));
-end
-
-if regexpi(features, 'objectness')
-    X = double(cat(2, X, Feat.objectness));
-end
-
-if regexpi(features, 'saliencymap')
-    X = double(cat(2, X, Feat.saliency));
 end
 
 if regexpi(features, 'objectOccurence')
@@ -164,7 +108,7 @@ elseif strcmpi(dataset, 'clipart')
     train_size = 50:50:400; test_idx = 401:499;
 end
 
-r_mse = zeros(length(train_size), 5); r_baseline = r_mse;
+r_spearman = zeros(length(train_size), 5);
 
 if regexpi(experiment, 'grid_search')
     
@@ -202,15 +146,8 @@ if regexpi(experiment, 'vary_size')
             Z_test = bsxfun(@minus,X(test_idx,:), mu);
             Z_test = bsxfun(@rdivide, Z_test, sigma0);
             
-            y_out = svmpredict2(y(test_idx), Z_test, model, '-q');
-            
-            y_const = mean(y)*ones(length(y_out), 1) + rand(length(y_out), 1);
-            %y_const = mean(y)*ones(length(y_out), 1);
-            
-            %r_mse(i, run) = sum(abs(y_out - y(test_idx)).^2)/numel(y_out);
-            %r_mse_const(i, run) = sum(abs(y_const - y(test_idx)).^2)/numel(y_const);
-            r_mse(i, run) = corr(y_out, y(test_idx), 'type', 'spearman');
-            r_baseline(i, run) = corr(y_const, y(test_idx), 'type', 'spearman');
+            y_out = svmpredict2(y(test_idx), Z_test, model, '-q');     
+            r_spearman(i, run) = corr(y_out, y(test_idx), 'type', 'spearman');
             
         end
         
@@ -219,6 +156,6 @@ if regexpi(experiment, 'vary_size')
 end
 
 save(sprintf('../../data/predict_specificity/%s_%s.mat', dataset, features), ...
-     'r_mse', 'r_baseline', 'train_size');
+     'r_spearman', 'train_size');
 
 end

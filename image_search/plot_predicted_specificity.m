@@ -1,5 +1,9 @@
+% Plot specificity prediction
+% Author: Mainak Jas
+
 clear all; close all;
 
+addpath('../../library/boundedline/');
 addpath('../../library/export_fig/');
 addpath('../aux_functions/');
 
