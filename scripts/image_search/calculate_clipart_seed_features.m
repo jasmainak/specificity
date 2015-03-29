@@ -1,10 +1,18 @@
-% Seed features for clipart
-% Author: Mainak Jas
+% CALCULATE_CLIPART_SEED_FEATURES Computes features for seed images in
+% CLIPART-50S dataset
+%
+% INPUT FILES
+%   data/image_features/cvpr_2013_seed_occurence_feat.mat
+%   data/sentences/clipart_500_img_48_sent.mat
+%
+% AUTHOR: Mainak Jas
+%
+% See also: calculate_predicted_mean_specificity
 
 clear all; close all;
 load('../../../data/image_features/cvpr_2013_seed_occurence_feat.mat');
-
 load('../../../data/sentences/clipart_500_img_48_sent.mat', 'clipart_urls');
+
 filename_idx = zeros(1, length(clipart_urls));
 for i=1:length(clipart_urls)
     temp = strsplit(clipart_urls{i}, '/');

@@ -1,13 +1,19 @@
-% Run save_clean_specificity.m after running this file
-function leave_img_similarities_out(dataset, method)
+% CALCULATE_TRAIN_SIMILARITY_INDICES finds the subset of the computed
+% candidate similarities for training
+%
+% INPUT
+%   data/image_search/{dataset}/similarity_scores/*
+%
+% OUTPUT
+%   data/image_search/{dataset}/similarity_scores/train_neg_class/*
+%
+% AUTHOR: Mainak Jas
+%
+% See also: save_train_specificity
+function calculate_train_similarity_indices(dataset)
 
-if strcmpi(method, 'cosine')
-    parameter_key = [dataset, '_', method];
-else
-    parameter_key = dataset;
-end
-
-[scores_b, scores_w, ~, sentences, m_sentences, url, sent_pairs] = load_search_parameters(parameter_key, 1);
+addpath('../io/');
+[scores_b, ~, ~, sentences, m_sentences, urls, sent_pairs] = load_search_parameters(dataset, 1);
 
 if strcmpi(dataset, 'pascal')
     k_sentences = 24; % number of sentences m_sentences must be reduced to
@@ -36,10 +42,13 @@ end
 close(h);
 
 for predicted_idx = 0:size(scores_b,1) - 1
-    fprintf('%d ... ', predicted_idx);
+    split_url = strsplit(urls{predicted_idx + 1}, '/');
+    filename = [split_url{end} '.mat'];    
+    fprintf('[%d] %s ... ', predicted_idx, filename);
+
     sample_idx = clean_predicted_idx(predicted_idx, scores_b, sentences, m_sentences, sent_pairs, sent_idxs, k_sentences);
     fprintf('Saving ... ');
-    save(sprintf('../../data/search_parameters/%s/%s/mud_cleaned/mud_%d.mat', dataset, method, predicted_idx), ...
+    save(sprintf('../../data/image_search/%s/similarity_scores/train_neg_class/%s', dataset, filename), ...
          'sample_idx', 'predicted_idx', '-v7.3');
     fprintf('[Done]\n');
 end
@@ -74,12 +83,4 @@ for im_idx = 1:size(scores_b,1)
     end
 end
 
-%scores_b_sampled = zeros(size(sample_idx));
-%sent_pairs_sampled = cell([size(sample_idx), 4]);
-%for im_idx = 1:size(scores_b, 1)
-%    scores_b_sampled(im_idx, :) = scores_b(im_idx, sample_idx(im_idx, :));
-%    sent_pairs_sampled(im_idx, :, :) = sent_pairs(im_idx, sample_idx(im_idx, :), :);
-%end
-
 end
-%setdiff(1:size(scores_b,1), predicted_idx + 1);

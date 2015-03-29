@@ -1,5 +1,14 @@
-% Calculate predicted mean specificity using SVR
-% Author: Mainak Jas
+% CALCULATE_PREDICTED_MEAN_SPECIFICITY Predicted automated/human specificity using SVR
+%
+% INPUT FILES
+%   data/features/feat_memorability.mat
+%   data/features/feat_pascal.mat
+%   data/features/feat_clipart.mat
+%   data/specificity_alldatasets.mat
+%
+% AUTHOR: Mainak Jas
+%
+% See also: PLOT_PREDICTED_MEAN_SPECIFICITY
 function calculate_predicted_mean_specificity()
 
 addpath(genpath('../../library/libsvm-3.17/'));

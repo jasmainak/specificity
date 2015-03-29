@@ -1,3 +1,14 @@
+% CALCULATE_PERCENTAGE_CURVE finds the percentage of times baseline is
+% beaten by specificity
+%
+% INPUT
+%   data/search_parameters/search_parameters_{dataset}.mat
+%   data/search_parameters/{dataset}/predicted_LR.mat
+%   data/specificity_alldatasets.mat
+%
+% AUTHOR: Mainak Jas
+%
+% See also: plot_percentage_curve.py
 function calculate_percentage_curve()
 
     [pascal.stats_b, pascal.stats_s, pascal.stats_min, pascal.stats_gt] = do_search('pascal');
@@ -15,7 +26,7 @@ function [stats_b, stats_s, stats_min, stats_gt] = do_search(dataset)
 
     % Load image features, query-ref similarities and predicted LR
     % parameters
-    load('../../data/image_features/feat_pascal.mat');
+    load('../../data/image_features/feat_pascal.mat'); % remove this line
     load(['../../data/search_parameters/search_parameters_' dataset '.mat'], 's');
     load(['../../data/search_parameters/' dataset '/predicted_LR.mat']);
     
@@ -31,13 +42,11 @@ function [stats_b, stats_s, stats_min, stats_gt] = do_search(dataset)
    
     rank_oracle = min([rank_min; rank_s; rank_b]);
 
-    [y_b, stats_b] = calculate_percentage(rank_b, rank_b, n_images);
-    [y_gt, stats_gt] = calculate_percentage(rank_gt, rank_b, n_images);
-    [y_s, stats_s] = calculate_percentage(rank_s, rank_b, n_images);
-    [y_min, stats_min] = calculate_percentage(rank_min, rank_b, n_images);
-    %[y_best, stats_best] = calculate_percentage(rank_best, rank_b, n_images);
-    %[y_oracle, stats_oracle] = calculate_percentage(rank_oracle, rank_b, n_images);
-    
+    [~, stats_b] = calculate_percentage(rank_b, rank_b, n_images);
+    [~, stats_gt] = calculate_percentage(rank_gt, rank_b, n_images);
+    [~, stats_s] = calculate_percentage(rank_s, rank_b, n_images);
+    [~, stats_min] = calculate_percentage(rank_min, rank_b, n_images);
+
 end
 
 function [y, stats] = calculate_percentage(rank, rank_b, n_images)
