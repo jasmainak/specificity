@@ -7,7 +7,7 @@ clear all; close all;
 addpath('../../library/export_fig/');
 
 %% Load data %%
-load('../../data/specificity_scores_all.mat');
+load('../../data/specificity_scores_MEM5S.mat');
 load('../../data/specificity_automated.mat');
 load('../../data/sentences/memorability_888_img_5_sent.mat');
 load('../../data/target_images.mat');
@@ -20,9 +20,9 @@ P = load('../../data/specificity_scores_140315.mat');
 fprintf('Correlation when 5 more sentences are added = %0.2f\n', ih_corr);
 
 %% Correlate human specificity vs automated %%
-[cr, pval] = corr(specificity, specificity_automated, 'type' ,'spearman');
+[cr, pval] = corr(specificity, specificity_automated', 'type' ,'spearman');
 
-scatter(specificity, specificity_automated, 5, 'filled');
+scatter(specificity, specificity_automated', 5, 'filled');
 h = lsline;
 set(h, 'Color', 'r', 'linewidth', 2);
 xlabel('Measured specificity', 'Fontsize', 12); ylabel('Automated specificity', 'Fontsize', 12);
@@ -31,7 +31,7 @@ set(gca, 'XLim', [0 1], 'YLim', [0 1], 'Tickdir', 'out', ...
     'YTick',0:0.2:1, 'XTick', 0:0.2:1, 'TickLength', [0.005; 0.025]);
 title(sprintf('Spearman''s \\rho = %0.2f, p-value < 0.01', cr), 'Fontsize', 14);
 
-export_fig '../../plots/paper/automated_vs_human.pdf' -transparent;
+export_fig '../../plots/automated_vs_human.pdf' -transparent;
 
 %% Show histogram of specifities %%
 x_pos = [0.07, 0.55, 0.07, 0.55];
@@ -66,7 +66,7 @@ for i=2:4
     title(titles{i});
 end
 
-export_fig '../../plots/paper/specificity_histogram.pdf' -transparent;
+export_fig '../../plots/specificity_histogram.pdf' -transparent;
 
 %% Show montage of high/mid/low value specificity images %%
 figure; [sorted_s, sorted_idx] = sort(specificity, 'descend');

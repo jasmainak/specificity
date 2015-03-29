@@ -3,7 +3,7 @@
 % Author: Mainak Jas
 
 clear all;
-load('../../data/specificity_scores_all.mat');
+load('../../data/specificity_scores_MEM5S.mat');
 
 % find frequencies of each worker / image
 new_scores = zeros(size(scores));

@@ -1,8 +1,6 @@
-% CORRELATE SPECIFICITY WITH:
-% sentence lengths, memorability, mean/median object area, object count,
-% color & importance
+% CORRELATE_SCORES correlates specificity with sentence lengths,
+% memorability, mean/median object area, object count, color & importance
 %
-% Author: Mainak Jas
 % Input files
 % -----------
 %   specificity_scores_all.mat
@@ -15,6 +13,8 @@
 % Output files
 % ------------
 %   correlate_specificity.pdf
+%
+% AUTHOR: Mainak Jas
 
 %% Specify directories
 close all; clear all;
@@ -22,7 +22,7 @@ addpath('../../library/export_fig/');
 
 %% Load data
 fprintf('Loading data ... ');
-load('../../data/specificity_scores_all.mat');
+load('../../data/specificity_scores_MEM5S.mat');
 load('../../data/memorability_mapping.mat');
 load('../../data/importance_scores.mat');
 load('../../data/memorability_sent_lengths.mat');
@@ -138,4 +138,4 @@ xlabel('Object count', 'Fontsize', 12);
 title(sprintf('\\rho = %0.2f, p-value = %0.2f\n', r.objectcountVsSpec, pval.objectcountVsSpec), 'Fontsize', 12);
 
 set(gcf, 'Position', [680   29   560   560]);
-export_fig '../../plots/paper/correlate_specificity.pdf' -transparent;
+export_fig '../../plots/correlate_specificity.pdf' -transparent;

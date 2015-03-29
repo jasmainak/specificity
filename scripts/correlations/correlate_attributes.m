@@ -1,5 +1,8 @@
-% Author: Mainak Jas
-% Find correlationss with attributes
+% CORRELATE_ATTRIBUTES finds correlation of specificity with attributes
+%
+% AUTHOR: Mainak Jas
+%
+% See also: FLIP_ATTRIBUTES
 
 close all; clear all;
 
@@ -7,9 +10,9 @@ addpath('../../library/rotateXLabels/');
 addpath('../../library/export_fig/');
 
 %% Load data and preprocess
-load('../../library/annotations/annotations/anno_feats_modified.mat');
-load('../../library/annotations/annotations/anno_names.mat');
-load('../../data/specificity_scores_all.mat');
+load('../../data/annotations/anno_feats_modified.mat');
+load('../../data/annotations/anno_names.mat');
+load('../../data/specificity_scores_MEM5S.mat');
 load('../../data/memorability_mapping.mat'); 
 load('../../data/target_images.mat');
 
@@ -89,4 +92,4 @@ set(gca, 'XTick', 1:20, 'XTickLabel', ...
 rotateXLabels(gca, 45); grid on;
 ylabel('Spearman''s \rho', 'Fontsize', 12);
 
-export_fig '../../plots/paper/attribute_correlations.pdf' -transparent;
+export_fig '../../plots/attribute_correlations.pdf' -transparent;
