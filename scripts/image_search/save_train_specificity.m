@@ -5,9 +5,9 @@
 %
 % See also: CALCULATE_TRAIN_SIMILARITY_INDICES,
 % CALCULATE_PREDICTED_LR_SPECIFICITY
+function save_train_specificity(dataset, overwrite)
 
-clear all; addpath('../io');
-dataset = 'pascal'; overwrite = 1;
+addpath('../io');
 
 %% Load data
 [scores_b, scores_w, ~, sentences, ~, url] = load_search_parameters(dataset);
@@ -66,4 +66,6 @@ for predicted_idx=1:n_images
     end
 
     save(fname, 'B');
+end
+
 end

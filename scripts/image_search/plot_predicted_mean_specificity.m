@@ -51,4 +51,4 @@ set(gca, 'Layer', 'top');
 set(gcf, 'Position', [286, 219, 538, 517]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-export_fig '../../plots/paper/predict_specificity.pdf' -transparent;
+export_fig '../../plots/predict_specificity.pdf' -transparent;

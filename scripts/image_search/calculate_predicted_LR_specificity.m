@@ -15,12 +15,12 @@
 % AUTHOR: Mainak Jas
 %
 % See also: calculate_percentage_curve
-dataset = 'clipart';
+function calculate_predicted_LR_specificity(dataset)
 
 addpath(genpath('../../library/libsvm-3.17/'));
 addpath('../io');
 
-[scores_b, scores_w, ~, sentences, ~, url] = load_search_parameters(dataset);
+[~, ~, ~, sentences, ~, url] = load_search_parameters(dataset);
 [n_images, ~] = size(sentences);
 
 %% CLASSIFICATION FEATURES
@@ -37,7 +37,7 @@ end
 
 %% LOADING PARAMETERS
 fprintf('\nStarting grid search ...');
-param_file = ['../../data/predict_search/' dataset '/optimal_param_1000im.mat'];
+param_file = ['../../data/image_search/optimal_param_' dataset '.mat'];
 load(param_file);
 
 n_folds = n_images;
@@ -51,7 +51,7 @@ for fold_idx=1:n_folds
     split_url = strsplit(url{fold_idx}, '/');
     filename = split_url{end};
 
-    load(sprintf('../../data/search_parameters/%s/LR/predicted_img_%s.mat', dataset, filename));
+    load(sprintf('../../data/image_search/%s/LR_params/GT/predicted_img_%s.mat', dataset, filename));
 
     fprintf('SVR :: fold %d\n', fold_idx);
 
@@ -79,5 +79,6 @@ for fold_idx=1:n_folds
     z_pred(test_idx) = svmpredict2(z(test_idx), Z_test, model_z, '-q');
 end
 
-save(['../../data/search_parameters/' dataset '/predicted_LR.mat'], ...
+save(['../../data/image_search/' dataset '/LR_params/Pred/predicted_LR.mat'], ...
      'y_pred', 'z_pred');
+end
