@@ -1,3 +1,7 @@
+% SAVE_SPECIFICITY saves the specificity for different datasets into one
+% file
+%
+% AUTHOR: Mainak Jas
 function save_specificity()
 
 specificity.pascal = find_specificity('pascal');

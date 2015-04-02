@@ -1,5 +1,4 @@
-function progressbar(idx, step, n_idx)
-% Shows progress
+% PROGRESSBAR shows progress in loops
 %
 % idx : int
 %   current index
@@ -7,6 +6,9 @@ function progressbar(idx, step, n_idx)
 %   interval at which to show progress (in percentage)
 % n_idx : int
 %   upper limit of the loop for which progressbar is being shown
+%
+% AUTHOR: Mainak Jas
+function progressbar(idx, step, n_idx)
 
     step_idx = floor(n_idx*step/100);
 

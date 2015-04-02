@@ -1,23 +1,27 @@
-% LOAD_SEARCH_PARAMETERS
+% LOAD_SEARCH_PARAMETERS loads the similarity scores computed using Python
 %
-% Author: Mainak Jas
+% SCORES_W    = load_search_parameters similarity scores between sentences *within* the same image
+% SCORES_B    = similarity scores between sentences *between* different images
+% SENTENCES   = list of sentences describing the images
+% URL         = web-url where the images are hosted
+% SENT_PAIRS  = list of sentence pairs (and the images they come from) on
+%               which the similarities are computed
 %
-% Load the search parameters: 
-% scores_w: 
-% scores_b: LR
-% sentences:
-% url:
-% sent_pairs
+% AUTHOR: Mainak Jas
 
 function [scores_b, scores_w, s, sentences, m_sentences, urls, sent_pairs] = load_search_parameters(dataset, request_sentpairs)
 
 addpath('../aux_functions');
 fprintf('\nLoading %s dataset ... ', dataset);
 
+% Since the sentence pairs take up a huge amount of memory, make it
+% optional to return it or not.
 if nargin < 2
     request_sentpairs = 0;
 end
 
+% All similarity scores are stored in the order the urls are stored in
+% these files
 if strcmpi(dataset, 'clipart')
     X = load('../../data/sentences/clipart_500_img_48_sent.mat');
     sentences = X.clipart_sentences;
@@ -31,6 +35,7 @@ end
 parameters_dir = sprintf('../../data/image_search/%s/similarity_scores', dataset);
 n_images = length(urls);
 
+% Loop over the similarity scores for different image
 scores_w = []; scores_b = []; s = []; sent_pairs = [];
 for i=1:n_images
     progressbar(i-1, 10, n_images);

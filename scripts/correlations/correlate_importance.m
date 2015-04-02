@@ -1,5 +1,7 @@
-% Correlation of specificity with importance
-% Author: Mainak Jas
+% CORRELATE_IMPORTANCE computes the correlation of specificity with
+% importance.
+%
+% AUTHOR: Mainak Jas
 
 clear all; close all;
 

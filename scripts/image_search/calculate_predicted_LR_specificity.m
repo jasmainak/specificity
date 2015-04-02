@@ -1,15 +1,7 @@
 % CALCULATE_PREDICTED_LR_SPECIFICITY finds the predicted LR specificity
 % using a Support Vector Regressor
 %
-% INPUT
-%   data/image_features/feat_{dataset}.mat
-%   data/predict_search/{dataset}/optimal_param_1000im.mat
-%   data/search_parameters/{dataset}/LR/predicted_img_{filename}
-%
-% OUTPUT
-%   data/search_parameters/{dataset}/predicted_LR.mat
-%
-% {dataset} = pascal / clipart
+% dataset = 'pascal' or 'clipart'
 %
 % AUTHOR: Mainak Jas
 %

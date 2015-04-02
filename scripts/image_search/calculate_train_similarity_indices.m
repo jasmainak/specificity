@@ -1,15 +1,11 @@
 % CALCULATE_TRAIN_SIMILARITY_INDICES finds the subset of the computed
 % candidate similarities for training
 %
-% INPUT
-%   data/image_search/{dataset}/similarity_scores/*
-%
-% OUTPUT
-%   data/image_search/{dataset}/similarity_scores/train_neg_class/*
+% DATASET = 'pascal' or 'clipart'
 %
 % AUTHOR: Mainak Jas
 %
-% See also: save_train_specificity
+% See also save_train_specificity
 function calculate_train_similarity_indices(dataset)
 
 addpath('../io/');

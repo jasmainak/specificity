@@ -1,5 +1,9 @@
-% Plot specificity prediction
-% Author: Mainak Jas
+% PLOT_PREDICTED_MEAN_SPECIFICITY plots the correlation of predicted
+% automated specificity with ground-truth automated specificity.
+%
+% AUTHOR: Mainak Jas
+%
+% See also calculate_predicted_mean_specificity
 
 clear all; close all;
 

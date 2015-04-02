@@ -1,11 +1,6 @@
 % CALCULATE_PERCENTAGE_CURVE finds the percentage of times baseline is
 % beaten by specificity
 %
-% INPUT
-%   data/search_parameters/search_parameters_{dataset}.mat
-%   data/search_parameters/{dataset}/predicted_LR.mat
-%   data/specificity_alldatasets.mat
-%
 % AUTHOR: Mainak Jas
 %
 % See also: plot_percentage_curve.py

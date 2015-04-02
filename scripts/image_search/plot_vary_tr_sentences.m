@@ -1,6 +1,9 @@
-% Author : Mainak Jas
+% PLOT_VARY_TR_SENTENCES plots the image search result for PASCAL-50S and
+% CLIPART-50S datsets when the number of training sentences is increased.
 %
-% Plots the retrival curve for Pascal and Clipart datasets
+% AUTHOR: Mainak Jas
+%
+% See also calculate_vary_tr_sentences
 
 clear all; close all;
 

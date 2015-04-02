@@ -1,3 +1,7 @@
+"""Find similarity scores for training and test set"""
+
+# Author: Mainak Jas
+
 import os
 import os.path as op
 import scipy.io
@@ -10,6 +14,8 @@ from optparse import OptionParser
 
 # remember to reload ipython if any changes are made to similarity.py
 from utils.similarity import find_sentence_similarity
+
+print(__doc__)
 
 
 def _load_dataset(dataset_name, method=''):

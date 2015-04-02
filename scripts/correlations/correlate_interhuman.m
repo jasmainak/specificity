@@ -1,6 +1,7 @@
-% Script to split the similarity ratings so that there are minimum
+% CORRELATE_INTERHUMAN splits the similarity ratings so that there are minimum
 % number of clashes in the splits & then find the inter-human correlation.
-% Author: Mainak Jas
+%
+% AUTHOR: Mainak Jas
 
 clear all;
 load('../../data/specificity_scores_MEM5S.mat');

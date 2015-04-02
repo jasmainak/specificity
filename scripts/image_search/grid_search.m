@@ -1,6 +1,7 @@
+% GRID_SEARCH performs grid search to select C and gamma for SVR
+%
+% AUTHOR: Mainak Jas
 function [bestc, bestg] = grid_search(X, y)
-
-% Grid search to select C and gamma
 
 optimalg = 1/size(X,2); % 1/number of features
 bestcv = Inf;

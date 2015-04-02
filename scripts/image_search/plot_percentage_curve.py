@@ -1,5 +1,11 @@
+"""Plot percentage of queries where baseline is beaten by at least K."""
+
+# Author: Mainak Jas
+
 from scipy.io import loadmat
 import matplotlib.pyplot as plt
+
+print(__doc__)
 
 mat = loadmat('../../data/search_results/percentage_results.mat',
               squeeze_me=True, struct_as_record=False)

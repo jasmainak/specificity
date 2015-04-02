@@ -1,6 +1,8 @@
-% Image Search
+% Image search results as the number of training sentences is increased.
 %
-% Author: Mainak Jas
+% AUTHOR: Mainak Jas
+%
+% See also plot_vary_tr_sentences
 
 clear all; close all;
 addpath('../io/');

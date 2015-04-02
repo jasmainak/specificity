@@ -1,6 +1,7 @@
-"""Calculate specificity automatically."""
+"""Calculate specificity automatically for the MEM-5S dataset."""
 
 # Author: Mainak Jas
+
 from nltk.corpus import wordnet as wn
 
 import numpy as np
@@ -10,6 +11,8 @@ from scipy.stats import nanmean
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from itertools import combinations, product
+
+print(__doc__)
 
 
 class PrettyFloat(float):
@@ -27,7 +30,7 @@ sent_pairs, scores_w = list(), list()
 vectorizer = TfidfVectorizer(token_pattern='(?u)\\b\\w\\w\\w+\\b')
 corpus = list()
 
-"""Build Corpus"""
+# Build corpus
 for sent_group in sentences:
     corpus.append(' '.join([sent[0] for sent in sent_group]))
 
@@ -53,7 +56,7 @@ for im_idx, sentence_group in enumerate(sentences):
         sim_max = list()
 
         print >>f, ''
-        # first find best-matches for words in sentences 1
+        # first find best-matches for words in sentence 1
         for w1 in words1:
             best_match, best_score = list(), list()
             for w2 in words2:

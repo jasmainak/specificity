@@ -1,3 +1,7 @@
+"""Calculate importance scores for correlation with specificity."""
+
+# Author: Mainak Jas
+
 from scipy import io
 from scipy.stats import nanmean
 import numpy as np

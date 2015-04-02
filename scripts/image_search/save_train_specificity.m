@@ -1,6 +1,9 @@
 % SAVE_TRAIN_SPECIFICITY Saves ground truth LR specificity for training
 % such that none of the sentences are used in the test dataset
 %
+% DATASET    = 'pascal' or 'clipart'
+% OVERWRITE  = 0 (to continue processing partial results) or 1 (to create new results).
+%
 % AUTHOR: Mainak Jas
 %
 % See also: CALCULATE_TRAIN_SIMILARITY_INDICES,
