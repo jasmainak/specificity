@@ -6,80 +6,92 @@ import numpy as np
 from joblib import Parallel, delayed
 from itertools import combinations
 
+from optparse import OptionParser
+
 # remember to reload ipython if any changes are made to similarity.py
 from utils.similarity import find_sentence_similarity
 
 
 def _load_dataset(dataset_name, method=''):
-    if dataset_name == 'memorability':
-        input_filename = '../../data/sentences/memorability_888_img_5_sent.mat'
-        output_dir = '../../data/search_parameters/memorability/' + method
-
-    elif dataset_name == 'pascal':
+    """Auxiliary function to load the dataset."""
+    if dataset_name == 'pascal':
         input_filename = '../../data/sentences/pascal_1000_img_50_sent.mat'
-        output_dir = '../../data/search_parameters/pascal/' + method
-
     elif dataset_name == 'clipart':
         input_filename = '../../data/sentences/clipart_500_img_48_sent.mat'
-        output_dir = '../../data/search_parameters/clipart/' + method
+    else:
+        raise RuntimeError('Dataset %s does not exist' % dataset_name)
 
-        mat = scipy.io.loadmat(input_filename)
-        sentences = mat['clipart_sentences']
+    output_dir = op.join('../../data/image_search', dataset_name,
+                         'similarity_scores')
 
     mat = scipy.io.loadmat(input_filename)
     sentences = mat[dataset_name + '_sentences']
     urls = mat[dataset_name + '_urls']
+    m_sentences = 40  # no of sentences per sentence in image
 
-    return sentences, urls, output_dir
+    return sentences, m_sentences, urls, output_dir
 
 
 if __name__ == '__main__':
 
-    dataset_name = raw_input("Please enter name of data set "
-                             "(pascal/memorability/clipart): ")
-    task = raw_input("Please enter the task (mus/s): ")
-    jobs = int(raw_input("Please enter number of parallel jobs: "))
-    method = 'cosine'
+    # #### Options for the main function ####
+    parser = OptionParser()
+    parser.add_option("-d", "--dataset", dest="dataset_name",
+                      help="dataset to evaluate (pascal/clipart)")
+    parser.add_option("-j", "--njobs", dest="n_jobs",
+                      help="number of parallel processes to run")
+    parser.add_option("-t", "--task", dest="task",
+                      help="task to do. Compute similarity score of"
+                           "(train_pos_class/train_neg_class/test)")
 
-    sentences, urls, output_dir = _load_dataset(dataset_name, method)
+    options, args = parser.parse_args()
+    dataset_name = options.dataset_name
+    n_jobs = options.n_jobs
+    task = options.task
+
+    # #### Set up things #####
+    sentences, m_sentences, urls, output_dir = _load_dataset(dataset_name)
     n_images, n_sentences = sentences.shape
 
-    if task == 's':
-        msg = 'Please enter ref_idx (0, %d): ' % (n_sentences - 1)
-        ref_idx = int(raw_input(msg))
-        msg = 'Please enter query_idx (0, %d): ' % (n_sentences - 1)
-        query_idx = int(raw_input(msg))
+    output_dir = op.join(output_dir, task)
 
-        output_dir = op.join(output_dir, 's', ('ref%d_query%d'
-                                               % (ref_idx, query_idx)))
-    elif task == 'mus':
-        output_dir = op.join(output_dir, 'mus')
+    if task == 'train_pos_class':
+        ref_idx, query_idx = 0, (n_sentences - 1)
+    elif task == 'train_neg_class':
+        # number of pairs for negative class
+        n_scores = n_sentences * m_sentences
+        pick_within = np.zeros((n_images, n_scores), dtype=int)
+        pick_others = np.zeros((n_images, n_scores), dtype=int)
 
-    # setup for parallel computation
-    parallel = Parallel(n_jobs=jobs, verbose=30)
+        # List of all sentences as list of tuples (im_idx, sentence)
+        sent_list = list()
+        for im_idx, sent_group in enumerate(sentences):
+            sent_list = sent_list + [(im_idx, sent) for sent in sent_group]
+
+    # #### setup for parallel computation #####
+    parallel = Parallel(n_jobs=n_jobs, verbose=30)
     my_fun = delayed(find_sentence_similarity)
 
-    # Create output directory if it doesn't exist
+    # #### Create output directory if it doesn't exist #####
     if not op.exists(output_dir):
         os.makedirs(output_dir)
 
-    print('Calculating search parameters ...')
+    print('Calculating similarity scores for image search (%s) ...' % task)
 
-    if task == 'mus':
-        for im_idx, (url, sent_group) in enumerate(zip(urls, sentences)):
+    for im_idx, (url, sent_group) in enumerate(zip(urls, sentences)):
+        # output filename
+        img_fname = op.basename(urls[im_idx][0][0])
+        fname = op.join(output_dir, ('%s.mat' % img_fname))
+        print('[%s] Image index = [%d/%d]' % (task, im_idx + 1, n_images))
 
-            # output filename
-            img_fname = op.basename(urls[im_idx][0][0])
-            fname = op.join(output_dir, ('img_%s.mat' % img_fname))
-            print('Image index = [%d/%d]' % (im_idx + 1, n_images))
+        if op.isfile(fname):
+            continue
 
-            if op.isfile(fname):
-                continue
-
+        if task == 'train_pos_class':
             # compute similarity
             similarity_w = parallel(my_fun(sent1, sent2,
                                            dataset_name=dataset_name,
-                                           verbose=False, method=method) for
+                                           verbose=False) for
                                     (sent1, sent2) in
                                     combinations(sent_group, 2))
 
@@ -96,29 +108,47 @@ if __name__ == '__main__':
             # save results
             savedict = {'scores_w': similarity_w, 'comb': comb,
                         'sent_pairs': np.asarray(sent_pairs, dtype='object')}
-            print('Saving result to %s' % fname)
-            scipy.io.savemat(fname, savedict)
 
-    elif task == 's':
-        for im_idx, (url, sent_group) in enumerate(zip(urls, sentences)):
+        elif task == 'train_neg_class':
+            pass
+            im_sentences = [(idx, sent) for (idx, sent) in sent_list
+                            if idx == im_idx]
+            other_sentences = [(idx, sent) for (idx, sent) in sent_list
+                               if idx != im_idx]
 
-            # output filename
-            img_fname = op.basename(urls[im_idx][0][0])
-            fname = op.join(output_dir, ('target_%s.mat' % img_fname))
-            print('Image index = [%d/%d]' % (im_idx + 1, n_images))
+            pick_within[im_idx, :] = [i for i in range(0, n_sentences)
+                                      for j in range(0, m_sentences)]
+            pick_others[im_idx, :] = np.random.randint(0, len(other_sentences),
+                                                       n_scores)
+            parallel = Parallel(n_jobs=n_jobs, verbose=30)
+            my_fun = delayed(find_sentence_similarity)
 
-            if op.isfile(fname):
-                continue
+            similarity_b = parallel(my_fun(im_sentences[i][1],
+                                           other_sentences[j][1],
+                                           dataset_name=dataset_name,
+                                           verbose=False)
+                                    for i, j in zip(pick_within[im_idx, :],
+                                    pick_others[im_idx, :]))
 
+            sent_pairs = [(im_sentences[i][0], im_sentences[i][1],
+                           other_sentences[j][0], other_sentences[j][1])
+                          for i, j in zip(pick_within[im_idx, :],
+                          pick_others[im_idx, :])]
+
+            # Save the data
+            savedict = {'scores_b': similarity_b,
+                        'sent_pairs': np.asarray(sent_pairs, dtype='object')}
+
+        elif task == 'test':
             # compute similarity
             refs = [ref_group[ref_idx] for ref_group in sentences]
             s = parallel(my_fun(ref, sent_group[query_idx],
-                                dataset_name=dataset_name, verbose=False,
-                                method=method)
+                                dataset_name=dataset_name, verbose=False)
                          for ref in refs)
 
             # save results
             savedict = {'s': s, 'query_sentence': sent_group[query_idx],
                         'ref_sentences': np.asarray(refs, dtype='object')}
-            print('Saving result to %s' % fname)
-            scipy.io.savemat(fname, savedict)
+
+        print('Saving result to %s' % fname)
+        scipy.io.savemat(fname, savedict)

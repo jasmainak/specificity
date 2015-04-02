@@ -39,13 +39,18 @@ plt.rc('ytick', labelsize=14)
 
 # TODO: use Helvetica fonts :)
 
+print('Rank of baseline for pascal is %0.2f' % mat['pascal'].stats_b.rank)
+print('Rank of P-Spec for pascal is %0.2f' % mat['pascal'].stats_s.rank)
+print('Rank of GT-Spec for pascal is %0.2f' % mat['pascal'].stats_gt.rank)
+print('Rank of baseline for clipart is %0.2f' % mat['clipart'].stats_b.rank)
+print('Rank of P-Spec for clipart is %0.2f' % mat['clipart'].stats_s.rank)
+print('Rank of GT-Spec for clipart is %0.2f' % mat['clipart'].stats_gt.rank)
+
 plt.tight_layout(pad=0.1)
 
 plt.show()
 
 # save figure
 fig = plt.gcf()
-fig.savefig('../../plots/paper/percentage_results.pdf', bbox='tight',
+fig.savefig('../../plots/percentage_results.pdf', bbox='tight',
             pad_inches=0)
-# plt.subplots_adjust(left=0., bottom=0., right=1., top=1., wspace=0.,
-#                            hspace=0.)

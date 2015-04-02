@@ -11,42 +11,39 @@
 % See also: plot_percentage_curve.py
 function calculate_percentage_curve()
 
-    [pascal.stats_b, pascal.stats_s, pascal.stats_min, pascal.stats_gt] = do_search('pascal');
-    [clipart.stats.b, clipart.stats_s, clipart.stats_min, clipart.stats_gt] = do_search('clipart');
+    [clipart.stats_b, clipart.stats_s, clipart.stats_gt] = do_search('clipart');
+    [pascal.stats_b, pascal.stats_s, pascal.stats_gt] = do_search('pascal');
 
     save('../../data/search_results/percentage_results.mat', 'pascal', 'clipart');
-
     
 end
 
-function [stats_b, stats_s, stats_min, stats_gt] = do_search(dataset)
+function [stats_b, stats_s, stats_gt] = do_search(dataset)
 
     addpath(genpath('../aux_functions/'));
+    addpath('../io/');
     addpath('utils/');
 
     % Load image features, query-ref similarities and predicted LR
     % parameters
-    load('../../data/image_features/feat_pascal.mat'); % remove this line
-    load(['../../data/search_parameters/search_parameters_' dataset '.mat'], 's');
-    load(['../../data/search_parameters/' dataset '/predicted_LR.mat']);
-    
-    feat = Feat.decaf;
-    n_images = length(s);
+    [~, ~, s, ~, ~, urls, ~] = load_search_parameters(dataset);
+    load(['../../data/image_search/' dataset '/LR_params/Pred/predicted_LR.mat']);
+    split_url = strsplit(urls{1}, '/');
+    filename = split_url{end};
+    load(['../../data/image_search/' dataset '/LR_params/GT/predicted_img_' filename '.mat']);
+    y = B(:, 1); z = B(:, 2);
 
-    [rank_min, rank_s, rank_b] = predict_best_method(s, y_pred, z_pred, feat);
+    n_images = length(s);
     
-    load('../../data/specificity_alldatasets.mat');
-    eval(['y = specificity.' dataset '.B0;']);
-    eval(['z = specificity.' dataset '.B1;']);
+    % Calculate image search results
+    rank_b = baseline_search(s);
+    rank_s = specificity_search(s, y_pred, z_pred);
     rank_gt = specificity_search(s, y, z);
-   
-    rank_oracle = min([rank_min; rank_s; rank_b]);
 
     [~, stats_b] = calculate_percentage(rank_b, rank_b, n_images);
     [~, stats_gt] = calculate_percentage(rank_gt, rank_b, n_images);
     [~, stats_s] = calculate_percentage(rank_s, rank_b, n_images);
-    [~, stats_min] = calculate_percentage(rank_min, rank_b, n_images);
-
+ 
 end
 
 function [y, stats] = calculate_percentage(rank, rank_b, n_images)
