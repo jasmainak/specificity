@@ -15,5 +15,5 @@ for i, sent_group in enumerate(sentences):
     for j, sent in enumerate(sent_group):
         sent_lengths[i][j] = len(analyze(sent[0]))
 
-io.savemat('../../data/sentences/memorability_sent_lengths.mat',
+io.savemat('../../data/memorability_sent_lengths.mat',
            dict(sent_lengths=sent_lengths))

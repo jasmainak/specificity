@@ -2,7 +2,6 @@
 % using a Support Vector Regressor
 %
 % INPUT
-%   data/search_parameters/search_parameters_{dataset}.mat
 %   data/image_features/feat_{dataset}.mat
 %   data/predict_search/{dataset}/optimal_param_1000im.mat
 %   data/search_parameters/{dataset}/LR/predicted_img_{filename}
