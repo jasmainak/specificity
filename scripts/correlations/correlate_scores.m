@@ -8,7 +8,7 @@
 %   importance_scores.mat
 %   memorability_sent_lengths.mat
 %   target_features.mat (from Isola et al., CVPR 2011 memorability paper)
-%   target_images.mat (from Isola et al.)
+%   data/memorability/img_{%d}.jpg
 %
 % Output files
 % ------------
@@ -26,7 +26,6 @@ load('../../data/specificity_scores_MEM5S.mat');
 load('../../data/memorability_mapping.mat');
 load('../../data/importance_scores.mat');
 load('../../data/memorability_sent_lengths.mat');
-load('../../data/target_images.mat');
 Feat = load('../../data/target_features.mat');
 fprintf('[Done]\n');
 
@@ -64,7 +63,7 @@ fprintf('Correlation of specificity with object count = %0.2f\n', r.objectcountV
 
 % COLOR
 for i=1:length(specificity)
-    I = img(:,:,:,mapping(i));
+    I = imread(sprintf('../../data/images/memorability/img_%d.jpg', i));
     
     red = I(:,:,1)./255; 
     green = I(:,:,2)./255; 

@@ -10,7 +10,6 @@ addpath('../../library/export_fig/');
 load('../../data/specificity_scores_MEM5S.mat');
 load('../../data/specificity_automated.mat');
 load('../../data/sentences/memorability_888_img_5_sent.mat');
-load('../../data/target_images.mat');
 load('../../data/memorability_mapping.mat');
 S = load('../../data/specificity_alldatasets.mat');
 P = load('../../data/specificity_scores_140315.mat');
@@ -75,7 +74,7 @@ pick_idx = [2, 202, 706, 887]; set(gcf, 'Position',  [364, 200, 1362, 500]);
 for i=1:length(pick_idx)
     subtightplot(1,4,i);
     img_idx = sorted_idx(pick_idx(i));
-    I = img(:, :, :, mapping(img_idx));
+    I = imread(sprintf('../../data/images/memorability/img_%d.jpg', img_idx));
     imshow(I); title(sprintf('Specificity = %0.2f', specificity(img_idx)), 'Fontsize', 12);
     
     for j=1:size(memorability_sentences,2)

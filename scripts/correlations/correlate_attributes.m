@@ -14,14 +14,12 @@ load('../../data/annotations/anno_feats_modified.mat');
 load('../../data/annotations/anno_names.mat');
 load('../../data/specificity_scores_MEM5S.mat');
 load('../../data/memorability_mapping.mat'); 
-load('../../data/target_images.mat');
 
 % Remove all features after the scenes
 anno_feats = anno_feats(:, 1:789);
 anno_names = anno_names(:, 1:789);
 
 mapping = mapping(1:length(specificity));
-img_min = img(:, :, :, mapping);
 anno_feats_min = anno_feats(mapping, :);
 
 % These attributes are basically manifestations of the attributes in top-10
