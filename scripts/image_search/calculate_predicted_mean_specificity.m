@@ -86,8 +86,8 @@ if regexpi(features, 'flip')
 end
 
 if strcmpi(dataset, 'pascal') || strcmpi(dataset, 'clipart')
-    y = y(~isnan(y));
     X = X(~isnan(y), :);
+    y = y(~isnan(y));
 end
 
 % Vary size of training data
