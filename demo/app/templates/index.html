@@ -1,0 +1,27 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<html>
+<body>
+<div class="container-fluid">
+	<h2>Predict Specificity</h2>
+	<p> Enter the url of an image or upload an image to automatically predict its specificity.
+	<!-- Allow urls -->
+	<form action="{{ url_for('predict') }}" method="get" role="form" class="form-inline" target="output_frame">
+		<div class="form-group">
+			<label for="url">URL </label>
+			<input type="text" class="form-control" name="url" />
+			<button type="submit" class="btn btn-default" value="Submit">Submit</button>
+		</div>
+	</form>
+	<!-- or file uploads -->
+	<form enctype="multipart/form-data" action="{{ url_for('predict') }}" method="post"
+		  role="form" class="form-inline" target="output_frame">
+		<div class="form-group">
+    		<label for="file">FILE </label>
+    		<input type="file" name="filename" class="form-control" accept="image/*"/>
+    		<button type="submit" class="btn btn-default" value="Submit">Submit</button>
+    	</div>
+	</form>
+</div>
+<iframe id="output_frame" name="output_frame" width="100%" height="70%" frameborder="0"></iframe>
+</body>
+</html>
