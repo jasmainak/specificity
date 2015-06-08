@@ -2,9 +2,10 @@
 
 These scripts are intended to reproduce the results in the paper "Image Specificity".
 
-- [arXiV preprint](http://arxiv.org/abs/1502.04569)
-- [supplementary material](https://computing.ece.vt.edu/~mainak/webpage/)
 - [project webpage](http://mainakjas.github.io/specificity/)
+- [arXiV preprint](http://arxiv.org/abs/1502.04569)
+- [dataset browser](https://computing.ece.vt.edu/~mainak/webpage/)
+- [demo](http://godel.ece.vt.edu/image_specificity)
 
 ## Citation
 
