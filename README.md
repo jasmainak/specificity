@@ -4,7 +4,7 @@ These scripts are intended to reproduce the results in the paper "Image Specific
 
 - [project webpage](http://mainakjas.github.io/specificity/)
 - [arXiV preprint](http://arxiv.org/abs/1502.04569)
-- [dataset browser](https://computing.ece.vt.edu/~mainak/webpage/)
+- [dataset browser](https://computing.ece.vt.edu/~mainak/specificity-dataset-browser/)
 - [demo](http://godel.ece.vt.edu/image_specificity)
 
 ## Citation
