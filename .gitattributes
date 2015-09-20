@@ -1,0 +1,4 @@
+*.epoch90 filter=lfs diff=lfs merge=lfs -text
+*.decafnet filter=lfs diff=lfs merge=lfs -text
+*.decafnet.epoch90 filter=lfs diff=lfs merge=lfs -text
+imagenet.decafnet.epoch90 filter=lfs diff=lfs merge=lfs -text
