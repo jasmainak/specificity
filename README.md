@@ -2,7 +2,7 @@
 
 These scripts are intended to reproduce the results in the paper "Image Specificity".
 
-- [project webpage](http://mainakjas.github.io/specificity/)
+- [project webpage](http://jasmainak.github.io/specificity/)
 - [arXiV preprint](http://arxiv.org/abs/1502.04569)
 - [dataset browser](https://computing.ece.vt.edu/~mainak/specificity-dataset-browser/)
 - [demo](http://godel.ece.vt.edu/image_specificity)
