@@ -6,6 +6,7 @@ These scripts are intended to reproduce the results in the paper "Image Specific
 - [arXiV preprint](http://arxiv.org/abs/1502.04569)
 - [dataset browser](https://computing.ece.vt.edu/~mainak/specificity-dataset-browser/)
 - [demo](http://godel.ece.vt.edu/image_specificity)
+- [pretrained imagenet model](https://copy.com/L7Kvh1R3IGyuSb4k)
 
 ## Citation
 
