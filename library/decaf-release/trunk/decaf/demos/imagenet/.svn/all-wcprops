@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/imagenet
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/imagenet/__init__.py
+END
+flask_service_is_down.py
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/imagenet/flask_service_is_down.py
+END
+flask_main.py
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/imagenet/flask_main.py
+END
+flask_main.sh
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/imagenet/flask_main.sh
+END

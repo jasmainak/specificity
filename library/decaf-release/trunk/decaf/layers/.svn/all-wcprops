@@ -1,0 +1,131 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/4/trunk/decaf/layers
+END
+deconvolution.py
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/deconvolution.py
+END
+identity.py
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/identity.py
+END
+group_convolution.py
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/group_convolution.py
+END
+sigmoid.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/sigmoid.py
+END
+dropout.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/dropout.py
+END
+flatten.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/flatten.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/__init__.py
+END
+regularization.py
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/regularization.py
+END
+normalize.py
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/normalize.py
+END
+fillers.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/fillers.py
+END
+sampler.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/sampler.py
+END
+padding.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/padding.py
+END
+pooling.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/pooling.py
+END
+core_layers.py
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/core_layers.py
+END
+relu.py
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/relu.py
+END
+innerproduct.py
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/innerproduct.py
+END
+convolution.py
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/convolution.py
+END
+loss.py
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/loss.py
+END
+softmax.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/softmax.py
+END
+puffsampler.py
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/puffsampler.py
+END
+im2col.py
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/im2col.py
+END

@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/notebooks
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/notebooks/__init__.py
+END
+lena_imagenet.ipynb
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/notebooks/lena_imagenet.ipynb
+END
+mnist.ipynb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/notebooks/mnist.ipynb
+END

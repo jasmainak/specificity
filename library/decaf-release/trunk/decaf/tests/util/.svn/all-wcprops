@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/util
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/util/__init__.py
+END
+dummydata.py
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/util/dummydata.py
+END
+sleeplayer.py
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/util/sleeplayer.py
+END

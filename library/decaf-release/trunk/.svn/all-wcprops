@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/7/trunk
+END
+LICENSE
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/LICENSE
+END
+.gitignore
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/.gitignore
+END
+setup.py
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/setup.py
+END
+README.md
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/7/trunk/README.md
+END

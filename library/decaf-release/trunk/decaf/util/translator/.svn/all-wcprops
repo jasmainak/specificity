@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/translator
+END
+conversions.py
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/translator/conversions.py
+END
+translator_softmax.py
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/translator/translator_softmax.py
+END
+registerer.py
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/translator/registerer.py
+END
+translator_conv.py
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/translator/translator_conv.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/translator/__init__.py
+END
+translator_neuron.py
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/translator/translator_neuron.py
+END
+translator_fc.py
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/translator/translator_fc.py
+END
+translator_pool.py
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/translator/translator_pool.py
+END
+translator_cmrnorm.py
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/translator/translator_cmrnorm.py
+END

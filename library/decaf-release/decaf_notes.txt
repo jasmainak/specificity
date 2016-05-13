@@ -1,0 +1,21 @@
+ export PYTHONPATH=/home/linxiao/turing/.python_packages/lib/python2.6/site-packages/:/home/linxiao/turing/.python_packages/lib64/python2.6/site-packages/
+ 
+ python batch_dispatch_center.py /image /decaf
+ 
+ 
+
+pip install --install-option="--prefix=$HOME/.python_packages" pil
+
+
+pip install --install-option="--prefix=$HOME/.python_packages" cython
+
+pip install --install-option="--prefix=$HOME/.python_packages" scikit-image
+
+
+pip install --install-option="--prefix=$HOME/.python_packages" networkx
+
+
+pip install --install-option="--prefix=$HOME/.python_packages" numexpr
+
+pip install --install-option="--prefix=$HOME/.python_packages" mpi4py
+

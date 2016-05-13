@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/opt
+END
+stochastic_solver.py
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/opt/stochastic_solver.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/opt/__init__.py
+END
+core_solvers.py
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/opt/core_solvers.py
+END
+lbfgs_solver.py
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/opt/lbfgs_solver.py
+END

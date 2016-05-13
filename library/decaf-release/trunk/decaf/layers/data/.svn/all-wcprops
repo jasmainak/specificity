@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/data
+END
+cub.py
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/data/cub.py
+END
+mnist.py
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/data/mnist.py
+END
+ndarraydata.py
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/data/ndarraydata.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/data/__init__.py
+END
+cifar.py
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/data/cifar.py
+END

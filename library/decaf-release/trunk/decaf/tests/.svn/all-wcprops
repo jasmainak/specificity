@@ -1,0 +1,185 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests
+END
+unittest_identity.py
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_identity.py
+END
+test_all.sh
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/test_all.sh
+END
+unittest_layers_innerproduct.py
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_layers_innerproduct.py
+END
+unittest_dropout.py
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_dropout.py
+END
+unittest_fillers.py
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_fillers.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/__init__.py
+END
+unittest_puff.py
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_puff.py
+END
+unittest_gradcheck_padding.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_padding.py
+END
+unittest_gradcheck_pooling.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_pooling.py
+END
+unittest_gradcheck_relu.py
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_relu.py
+END
+unittest_opt.py
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_opt.py
+END
+unittest_gradcheck_innerproduct.py
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_innerproduct.py
+END
+unittest_pooling.py
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_pooling.py
+END
+unittest_gradcheck_convolution.py
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_convolution.py
+END
+unittest_base.py
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_base.py
+END
+unittest_gradcheck_loss.py
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_loss.py
+END
+unittest_gradcheck_softmax.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_softmax.py
+END
+unittest_gradcheck_normalizer.py
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_normalizer.py
+END
+unittest_imagenet_pipeline.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_imagenet_pipeline.py
+END
+unittest_local_response_normalization.py
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_local_response_normalization.py
+END
+unittest_gradcheck_im2col.py
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_im2col.py
+END
+unittest_util_mpi.py
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_util_mpi.py
+END
+unittest_gradcheck_deconvolution.py
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_deconvolution.py
+END
+unittest_im2col.py
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_im2col.py
+END
+unittest_gradcheck_group_convolution.py
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_group_convolution.py
+END
+unittest_gradcheck_sigmoid.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_sigmoid.py
+END
+unittest_gradcheck_split.py
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_split.py
+END
+unittest_util_translator.py
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_util_translator.py
+END
+unittest_gradcheck_dropout.py
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_gradcheck_dropout.py
+END
+unittest_blasdot.py
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/tests/unittest_blasdot.py
+END

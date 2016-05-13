@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util
+END
+blasdot.py
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/blasdot.py
+END
+gradcheck.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/gradcheck.py
+END
+transform.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/transform.py
+END
+visualize.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/visualize.py
+END
+logexp.py
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/logexp.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/__init__.py
+END
+_mpi_dummy.py
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/_mpi_dummy.py
+END
+_numpy_blasdot.py
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/_numpy_blasdot.py
+END
+timer.py
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/timer.py
+END
+smalldata.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/smalldata.py
+END
+mpi.py
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/mpi.py
+END
+pyvml.py
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/util/pyvml.py
+END

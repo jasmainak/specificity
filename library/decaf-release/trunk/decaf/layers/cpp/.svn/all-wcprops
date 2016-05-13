@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/4/trunk/decaf/layers/cpp
+END
+local_response_normalization.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/cpp/local_response_normalization.cpp
+END
+local_response_normalization.h
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/cpp/local_response_normalization.h
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/cpp/__init__.py
+END
+im2col.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/cpp/im2col.cpp
+END
+neuron.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/4/trunk/decaf/layers/cpp/neuron.cpp
+END
+wrapper.py
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/cpp/wrapper.py
+END
+fastpool.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/cpp/fastpool.cpp
+END
+im2col.h
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/cpp/im2col.h
+END
+neuron.h
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/cpp/neuron.h
+END
+speedtest_lrn.cpp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/cpp/speedtest_lrn.cpp
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/cpp/Makefile
+END
+fastpool.h
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/layers/cpp/fastpool.h
+END

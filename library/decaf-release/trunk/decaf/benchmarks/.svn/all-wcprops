@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/benchmarks
+END
+test_convolution.py
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/benchmarks/test_convolution.py
+END
+test_lena_prediction_pipeline.py
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/benchmarks/test_lena_prediction_pipeline.py
+END

@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos
+END
+demo_sparse_autoencoder.py
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/demo_sparse_autoencoder.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/__init__.py
+END
+demo_convolution.py
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/demo_convolution.py
+END
+demo_mnist_two_layer_classifier.py
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/UCB-ICSI-Vision-Group/decaf-release/!svn/ver/1/trunk/decaf/demos/demo_mnist_two_layer_classifier.py
+END
